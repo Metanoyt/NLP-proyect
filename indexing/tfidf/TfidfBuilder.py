@@ -115,15 +115,12 @@ class TfidfBuilder:
         f = open(path, 'r', encoding="utf8")
 
         # GUardo texto en una variable
-        texto = f.read()
-
+        text = f.read()
+        # Tokenizo el texto
+        tokenizer = ToktokTokenizer()
+        tokens = tokenizer.tokenize(text.lower())
         # Cierro el archivo
         f.close()
-
-        # Realizo un preprocesamiento del texto
-        tokens = self.__preprocesamiento(texto)
-
-        # print(tokens[0])
 
         # Agrego los terminos y su frecuencia al diccionario
         i = 0

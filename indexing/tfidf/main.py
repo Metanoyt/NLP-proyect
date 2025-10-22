@@ -76,5 +76,13 @@ def main():
     # Save the TFIDF model to disk
     tfidf_builder.save_model("tfidf_model.pkl") # eventually this should be handled by the vector model search class
 
+    #display
+    for doc in docs:
+        print(f"TF-IDF for document: {doc}")
+        tfidf_vector = tfidf_builder.get_tfidf_for_document(doc)
+        for term, score in tfidf_vector.items():
+            print(f"Term: {term}, TF-IDF: {score}")
+        print("\n")
+
 if __name__ == "__main__":
     main()
