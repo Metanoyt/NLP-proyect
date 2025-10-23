@@ -7,6 +7,7 @@ from nltk.tokenize.toktok import ToktokTokenizer
 
 repo_base_path = "/path/to/your/repo"
 processing_base_path = "./pyfiles/"
+original_files_path = "./original_files/"
 
 tokenizer = ToktokTokenizer()
 def preprocess_text(file_txt:str, tokenizer=tokenizer):
@@ -36,7 +37,7 @@ def remove_unwanted_terms(tokens):
         return filtered_tokens
 
 # Initialize the TFIDF Builder
-def move_files_to_processing_directory():
+def move_files_and_process():
     """
     Move all .py files from the repository to the processing directory after preprocessing their text.
     """
@@ -60,15 +61,21 @@ def move_files_to_processing_directory():
                     continue
                 preprocessed_text = preprocess_text(file_text)
                 list_of_files.append(file)
+                # Save processed file to processing directory
                 with open(os.path.join(processing_base_path, file), 'w', encoding='utf-8') as f:
                     f.write(preprocessed_text)
+                # Copy original file to original_files directory
+                if not os.path.exists(original_files_path):
+                    os.makedirs(original_files_path)
+                shutil.copy2(os.path.join(root, file), os.path.join(original_files_path, file))
+                
     return list_of_files
 
 
 def main():
 
     # Get all .py files in the repo and move them to processing directory after preprocessing
-    docs = move_files_to_processing_directory() 
+    docs = move_files_and_process() 
 
     tfidf_builder = TFIDFBuilder(processing_base_path)
     tfidf_builder.build_tfidf()
@@ -76,6 +83,7 @@ def main():
     # Save the TFIDF model to disk
     tfidf_builder.save_model("tfidf_model.pkl") # eventually this should be handled by the vector model search class
 
+    #TODO: Super importante, necesitamos pasar el documento original para el contexto, no el preprocesado
     #display
     for doc in docs:
         print(f"TF-IDF for document: {doc}")
