@@ -1,6 +1,6 @@
 import os
 from math import log
-from nltk.corpus import stopwords
+# from nltk.corpus import stopwords
 from nltk.tokenize.toktok import ToktokTokenizer
 
 class TfidfBuilder:
@@ -139,3 +139,6 @@ class TfidfBuilder:
         textName = textName[-1]
         # Retorno el nombre del archivo junto con su diccionario de terminos
         return [textName, dic]
+    
+    def get_tfidf(self):
+        return self.tfidf

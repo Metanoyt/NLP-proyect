@@ -3,9 +3,10 @@ import os
 import shutil
 import re
 from nltk.tokenize.toktok import ToktokTokenizer
+from indexing.tfidf.HexSaver import HexSaver
 
 
-repo_base_path = "/path/to/your/repo"
+repo_base_path = "..\..\sample_projects\pytorch"
 processing_base_path = "./pyfiles/"
 original_files_path = "./original_files/"
 
@@ -60,7 +61,7 @@ def move_files_and_process():
                     print(f"An error occurred while reading file {file}: {e}")
                     continue
                 preprocessed_text = preprocess_text(file_text)
-                list_of_files.append(file)
+                list_of_files.append(os.path.join(processing_base_path, file))
                 # Save processed file to processing directory
                 with open(os.path.join(processing_base_path, file), 'w', encoding='utf-8') as f:
                     f.write(preprocessed_text)
@@ -80,17 +81,20 @@ def main():
     tfidf_builder = TFIDFBuilder(processing_base_path)
     tfidf_builder.build_tfidf()
 
-    # Save the TFIDF model to disk
-    tfidf_builder.save_model("tfidf_model.pkl") # eventually this should be handled by the vector model search class
-
     #TODO: Super importante, necesitamos pasar el documento original para el contexto, no el preprocesado
     #display
     for doc in docs:
         print(f"TF-IDF for document: {doc}")
-        tfidf_vector = tfidf_builder.get_tfidf_for_document(doc)
-        for term, score in tfidf_vector.items():
+        tfidf_vector = tfidf_builder.__getTFforFile(doc)
+        for term, score in tfidf_vector.items()[:10]:  # Display top 10 terms
             print(f"Term: {term}, TF-IDF: {score}")
         print("\n")
+
+    # Save the TFIDF model to disk
+    tfid_state = tfidf_builder.get_tfidf()
+    
+    tfidf_save_path = "./tfidf_model_state"
+    HexSaver.saveState(tfidf_save_path, tfid_state)
 
 if __name__ == "__main__":
     main()
