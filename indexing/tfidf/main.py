@@ -1,9 +1,9 @@
-from tdidf.tfidf_builder import TFIDFBuilder
 import os
 import shutil
 import re
 from nltk.tokenize.toktok import ToktokTokenizer
 from indexing.tfidf.HexSaver import HexSaver
+from indexing.tfidf.TfidfBuilder  import TfidfBuilder
 
 
 repo_base_path = "..\..\sample_projects\pytorch"
@@ -78,7 +78,7 @@ def main():
     # Get all .py files in the repo and move them to processing directory after preprocessing
     docs = move_files_and_process() 
 
-    tfidf_builder = TFIDFBuilder(processing_base_path)
+    tfidf_builder = TfidfBuilder(processing_base_path)
     tfidf_builder.build_tfidf()
 
     #TODO: Super importante, necesitamos pasar el documento original para el contexto, no el preprocesado
