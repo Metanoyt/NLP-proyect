@@ -1,12 +1,23 @@
 import os
 import shutil
 import re
-from nltk.tokenize.toktok import ToktokTokenizer
-from indexing.tfidf.HexSaver import HexSaver
-from indexing.tfidf.TfidfBuilder  import TfidfBuilder
+# Try to import ToktokTokenizer from NLTK using known locations; if unavailable, provide a small fallback.
+try:
+    from nltk.tokenize.toktok import ToktokTokenizer
+except Exception:
+    try:
+        from nltk.tokenize import ToktokTokenizer
+    except Exception:
+        # Fallback simple tokenizer using regex split on non-word characters
+        class ToktokTokenizer:
+            def tokenize(self, text):
+                return [t for t in re.split(r'\W+', text) if t]
+
+from HexSaver import HexSaver
+from TfidfBuilder  import TfidfBuilder
 
 
-repo_base_path = "..\..\sample_projects\pytorch"
+repo_base_path = "NLP-proyect\sample_projects"
 processing_base_path = "./pyfiles/"
 original_files_path = "./original_files/"
 
@@ -79,13 +90,12 @@ def main():
     docs = move_files_and_process() 
 
     tfidf_builder = TfidfBuilder(processing_base_path)
-    tfidf_builder.build_tfidf()
 
     #TODO: Super importante, necesitamos pasar el documento original para el contexto, no el preprocesado
     #display
     for doc in docs:
         print(f"TF-IDF for document: {doc}")
-        tfidf_vector = tfidf_builder.__getTFforFile(doc)
+        tfidf_vector = tfidf_builder.getTFforFile(doc)
         for term, score in tfidf_vector.items()[:10]:  # Display top 10 terms
             print(f"Term: {term}, TF-IDF: {score}")
         print("\n")

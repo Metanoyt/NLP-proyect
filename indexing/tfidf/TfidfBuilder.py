@@ -60,7 +60,7 @@ class TfidfBuilder:
         doc_list = [(self.PATH + "/" + i) for i in dir_list if i.endswith(".txt")]
         tf_list = []
         for i in doc_list:
-            tf_list.append(self.__getTFforFile(i))
+            tf_list.append(self.getTFforFile(i))
 
         return [len(doc_list), tf_list]
     
@@ -100,7 +100,7 @@ class TfidfBuilder:
         self.__idf[term] = 1 + log(D / (df + 1))
 
 
-    def __getTFforFile(self, path):
+    def getTFforFile(self, path):
         """
         Funcion principal que recibe la ruta de un archivo y le aplica preprocesamiento y lo guarda 
         en un diccionario.
