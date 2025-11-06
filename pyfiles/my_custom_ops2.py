@@ -1,0 +1,1 @@
+model get_custom_op_library_path torch torch ops load_library get_custom_op_library_path torch library register_fake custom sin sin_abstract x torch empty_like x

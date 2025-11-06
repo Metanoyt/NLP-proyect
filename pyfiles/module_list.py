@@ -1,0 +1,1 @@
+torch ModuleList elements type Module FooModule torch nn Module pass BarModule torch nn Module pass ml torch nn ModuleList = torch nn ModuleList FooModule BarModule ml children == noqa B reveal_type ml E ModuleList

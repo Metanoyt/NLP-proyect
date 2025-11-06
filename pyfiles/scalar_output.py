@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch torch export Dim x = torch randn dim _x = Dim dim _x ScalarOutput torch nn Module Returning scalar values graph supported addition Tensor outputs Symbolic shapes captured rank specialized __init__ - None super __init__ forward x x shape + example_args = x tags = torch dynamic-shape dynamic_shapes = x dim _x model = ScalarOutput

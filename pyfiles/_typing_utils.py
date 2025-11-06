@@ -1,0 +1,1 @@
+Miscellaneous utilities aid typing typing Optional TypeVar Helper turn Optional T into T when we know None either isn t possible should trigger exception T = TypeVar T not_none obj Optional T - T obj None raise TypeError Invariant encountered value None when should obj

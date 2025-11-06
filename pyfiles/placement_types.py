@@ -1,0 +1,1 @@
+NOTE torch distributed _tensor has been moved torch distributed tensor The imports here purely backward compatibility We will remove these imports few releases TODO throw warnings when module imported torch distributed tensor _dtensor_spec noqa F F torch distributed tensor placement_types noqa F F

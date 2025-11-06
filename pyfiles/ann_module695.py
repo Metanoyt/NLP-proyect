@@ -1,0 +1,1 @@
+__future__ annotations typing Callable A T Ts P x T y tuple Ts z Callable P str B T Ts P T = int Ts = str P = bytes x T y Ts z P generic_function T Ts P x T y Ts z P args zz P kwargs - None

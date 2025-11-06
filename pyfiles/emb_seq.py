@@ -1,0 +1,1 @@
+torch nn nn EmbeddingNetwork nn Module __init__ dim= super __init__ emb = nn Embedding dim lin = nn Linear dim seq = nn Sequential emb lin forward input seq input EmbeddingNetwork nn Module __init__ in_space= dim= super __init__ embedding = nn Embedding in_space dim seq = nn Sequential embedding nn Linear dim nn Sigmoid forward indices seq indices

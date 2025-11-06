@@ -1,0 +1,1 @@
+r Decorator used test_decorator py We define separate file purpose test names different modules resolved correctly functools my_decorator func Dummy decorator removes itself when torchscripting functools wraps func wrapped_func args kwargs func args kwargs torch jit script uses __prepare_scriptable__ remove decorator wrapped_func __prepare_scriptable__ = lambda func wrapped_func

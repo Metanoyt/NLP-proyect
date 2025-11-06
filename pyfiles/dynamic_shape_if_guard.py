@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch DynamicShapeIfGuard torch nn Module ` ` statement backed dynamic shape predicate will specialized into one particular branch generate guard However export will fail dimension marked dynamic shape higher level API forward x x shape == x cos x sin example_args = torch randn tags = torch dynamic-shape python control-flow model = DynamicShapeIfGuard

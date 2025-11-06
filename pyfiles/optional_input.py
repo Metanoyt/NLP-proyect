@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch torch _export db case SupportLevel OptionalInput torch nn Module Tracing through optional input supported yet forward x y=torch randn y None x + y x example_args = torch randn tags = python object-model support_level = SupportLevel SUPPORTED model = OptionalInput

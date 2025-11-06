@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch cpp_utils DTYPE_TO_CPP DTYPE_TO_ROCM_TYPE = DTYPE_TO_CPP torch float uint _t torch float _e m fnuz uint _t torch float _e m fnuz uint _t torch float _e m fn uint _t torch float _e m uint _t torch bfloat uint _t

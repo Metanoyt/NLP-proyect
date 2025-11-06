@@ -1,0 +1,1 @@
+Trivial use Timer API $ python -m examples simple_timeit torch torch utils benchmark benchmark_utils main - None timer = benchmark_utils Timer stmt= x + y globals= x torch ones y torch ones label= Broadcasting add x i range print f Run i \n - print f timeit \n timer timeit \n print f autorange \n timer blocked_autorange \n\n __name__ == __main__ main

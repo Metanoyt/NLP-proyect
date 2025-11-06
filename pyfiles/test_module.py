@@ -1,0 +1,1 @@
+Owner s oncall package deploy torch try torchvision models resnet TorchVisionTest torch nn Module __init__ - None super __init__ tvmod = resnet forward x x = a_non_torch_leaf x x torch relu x + except ImportError pass a_non_torch_leaf b + b

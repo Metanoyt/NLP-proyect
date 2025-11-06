@@ -1,0 +1,1 @@
+Test ` ` inspect formatannotation ` ` https github com python cpython issues typing Union List ann = Union List str int mock typing _type_repr behaviour A A __module__ = testModule typing A __qualname__ = A ann = Union List A int

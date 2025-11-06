@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch DynamicShapeSlicing torch nn Module Slices dynamic shape arguments should captured into graph rather than being baked forward x x x shape - x shape - example_args = torch randn tags = torch dynamic-shape model = DynamicShapeSlicing

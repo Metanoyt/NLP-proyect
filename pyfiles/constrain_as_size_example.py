@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch ConstrainAsSizeExample torch nn Module If value known tracing time you can provide hint so we can trace further Please look torch _check APIs forward x = x item torch _check = torch _check = torch zeros example_args = torch tensor tags = torch dynamic-value torch escape-hatch model = ConstrainAsSizeExample

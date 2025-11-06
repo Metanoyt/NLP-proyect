@@ -1,0 +1,1 @@
+Tests have ` ` __text_signature__ ` ` __future__ annotations DEFAULT_BUFFER_SIZE = BufferedReader object BufferedReader raw buffer_size=DEFAULT_BUFFER_SIZE \n -- \n\n Create new buffered reader using given readable raw IO object pass

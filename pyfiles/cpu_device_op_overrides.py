@@ -1,0 +1,1 @@
+__future__ annotations textwrap dedent common DeviceOpOverrides register_device_op_overrides CpuDeviceOpOverrides DeviceOpOverrides import_get_raw_stream_as name str - str dedent get_raw_stream _ cpp_kernel_type - str void set_device device_idx int - str pass synchronize - str pass device_guard device_idx int - str pass register_device_op_overrides cpu CpuDeviceOpOverrides

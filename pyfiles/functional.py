@@ -1,0 +1,1 @@
+r nn quantized functional Quantized equivalents ` nn functional ` Note This location process being deprecated Please use ` torch ao nn quantized functional ` instead torch ao nn quantized functional noqa F F

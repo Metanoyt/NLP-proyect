@@ -1,0 +1,1 @@
+mypy ignore-errors torch nn nn Net nn Module __init__ - None super __init__ linear = nn Linear

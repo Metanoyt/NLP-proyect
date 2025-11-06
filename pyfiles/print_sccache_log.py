@@ -1,0 +1,1 @@
+sys log_file_path = sys argv open log_file_path f lines = f readlines line lines Ignore errors CPU instruction set symbol existing testing compilation error formatting ignored_keywords = src c CheckSymbolExists c test_compilation_error_formatting all keyword line keyword ignored_keywords print line

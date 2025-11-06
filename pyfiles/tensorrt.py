@@ -1,0 +1,1 @@
+torch type ignore common device_from_inputs fake_tensor_unsupported type ignore registry register_backend type ignore Placeholder TensorRT backend dynamo via torch-tensorrt register_backend tensorrt gm example_inputs torch_tensorrt type ignore pass

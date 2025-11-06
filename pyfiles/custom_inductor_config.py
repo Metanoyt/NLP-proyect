@@ -1,0 +1,1 @@
+Owner s module inductor This module used test_codecache py verify correctness FXGraphHashDetails when custom inductor backend registers its own config object sys torch utils _config_module install_config_module enable_optimisation bool = False adds patch save_config etc install_config_module sys modules __name__

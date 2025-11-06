@@ -1,0 +1,1 @@
+torch foo opt torch optim Optimizer - None opt zero_grad opt_adagrad = torch optim Adagrad torch tensor reveal_type opt_adagrad E Adagrad foo opt_adagrad opt_adam = torch optim Adam torch tensor lr= e- eps= e- reveal_type opt_adam E Adam foo opt_adam

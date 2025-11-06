@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch StaticForLoop torch nn Module A loop constant number iterations should unrolled exported graph forward x constant ret = i + x i range ret example_args = torch randn tags = python control-flow model = StaticForLoop

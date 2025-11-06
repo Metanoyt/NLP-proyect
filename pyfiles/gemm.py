@@ -1,0 +1,1 @@
+__future__ annotations typing TYPE_CHECKING config inductor_config base TemplateConfigHeuristics TYPE_CHECKING kernel_inputs KernelInputs GemmMaxAutotuneTemplateConfigHeuristics TemplateConfigHeuristics should_run inputs KernelInputs - bool simple base override GEMM family templates run only max-autotune inductor_config max_autotune inductor_config max_autotune_gemm

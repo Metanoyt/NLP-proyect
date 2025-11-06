@@ -1,0 +1,1 @@
+r Define exceptions used test_exception py We define them separate file purpose make sure fully qualified exception name captured correctly suce cases MyKeyError KeyError pass

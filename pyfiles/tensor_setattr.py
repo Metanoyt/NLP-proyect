@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch TensorSetattr torch nn Module setattr call onto tensors supported forward x attr setattr x attr torch randn x + example_args = torch randn attr tags = python builtin model = TensorSetattr

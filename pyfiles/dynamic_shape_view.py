@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch DynamicShapeView torch nn Module Dynamic shapes should propagated view arguments instead being baked into exported graph forward x new_x_shape = x size - + x = x view new_x_shape x permute example_args = torch randn tags = torch dynamic-shape model = DynamicShapeView

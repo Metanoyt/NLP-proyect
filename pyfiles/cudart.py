@@ -1,0 +1,1 @@
+mypy disable-error-code= no-untyped-def torch cuda cudaError_t cudaSuccess = True cudaFree n cudaError_t cudaSuccess cudaGetDeviceProperties d DummyError value = False DummyError torch cuda get_device_properties d

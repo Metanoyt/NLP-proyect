@@ -1,0 +1,1 @@
+model get_custom_op_library_path torch torch ops load_library get_custom_op_library_path NB The impl_abstract_pystub cos actually specifies should live my_custom_ops module torch library register_fake custom cos cos_abstract x torch empty_like x NB There no impl_abstract_pystub tan torch library register_fake custom tan tan_abstract x torch empty_like x

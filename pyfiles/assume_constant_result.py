@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch torch _dynamo torchdynamo AssumeConstantResult torch nn Module Applying ` assume_constant_result ` decorator burn make non-tracable code constant torchdynamo assume_constant_result get_item y y int item forward x y x get_item y example_args = torch randn torch tensor tags = torch escape-hatch model = AssumeConstantResult

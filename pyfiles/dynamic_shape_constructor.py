@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch DynamicShapeConstructor torch nn Module Tensor constructors should captured dynamic shape inputs rather than being baked static shape forward x torch zeros x shape example_args = torch randn tags = torch dynamic-shape model = DynamicShapeConstructor

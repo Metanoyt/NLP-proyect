@@ -1,0 +1,1 @@
+ir_version used ONNX file See https github com onnx onnx blob main docs IR md#onnx-versioning ONNX_IR_VERSION = The opset version torchlib implemented Update number when updating torchlib TORCHLIB_OPSET = TORCHLIB_DOMAIN = pkg torch onnx Domain used functions translated subgraphs LOCAL_FUNCTION_DOMAIN = pkg torch __subgraph__

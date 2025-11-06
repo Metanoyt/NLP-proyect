@@ -1,0 +1,1 @@
+timeit torch fx N = K = huge_graph fn x _ range N x = x sin x torch fx symbolic_trace fn main g = huge_graph fn n g graph nodes pass t = min timeit repeat fn number=K repeat= print f iterating over N K FX nodes took t f s N K t f nodes s __name__ == __main__ main

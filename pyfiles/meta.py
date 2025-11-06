@@ -1,0 +1,1 @@
+torchgen model NativeFunctionsGroup Follows dispatcher calling convention - Mutable arguments allowed Meta functions always written functional form Look FunctionSchema signature - No tensor returns instead we TensorMeta describing tensor question name g NativeFunctionsGroup - str use overload name functional version str g functional func name replace _

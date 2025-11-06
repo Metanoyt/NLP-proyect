@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch torch _export db case SupportLevel TorchSymMin torch nn Module torch sym_min operator supported export forward x x sum + torch sym_min x size example_args = torch randn tags = torch operator support_level = SupportLevel NOT_SUPPORTED_YET model = TorchSymMin

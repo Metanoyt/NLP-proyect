@@ -1,0 +1,1 @@
+Copyright c Meta Platforms Inc affiliates typing Optional _derived_version Optional str = None

@@ -1,0 +1,1 @@
+mypy allow-untyped-defs functools torch test_decorator func functools wraps func wrapper args kwargs func args kwargs + wrapper Decorator torch nn Module Decorators calls inlined into exported function during tracing test_decorator forward x y x + y example_args = torch randn torch randn model = Decorator

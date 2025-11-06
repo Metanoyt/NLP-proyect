@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch ListContains torch nn Module List containment relation can checked dynamic shape constants forward x assert x size - assert x size assert monkey cow pig x + x example_args = torch randn tags = torch dynamic-shape python data-structure python assert model = ListContains

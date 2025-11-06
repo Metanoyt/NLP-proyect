@@ -1,0 +1,1 @@
+mypy allow-untyped-defs typing TypeVar torch T = TypeVar T returns all same mode all_same_mode modes all tuple mode == modes mode modes no_dispatch = torch _C _DisableTorchDispatch

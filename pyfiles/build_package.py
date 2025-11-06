@@ -1,0 +1,1 @@
+build_package_contents = os pathlib Path torch _inductor package package compile_so curr_dir = Path __file__ parent aoti_files = os path join root file root dirs files os walk curr_dir file files output_so = compile_so curr_dir aoti_files curr_dir

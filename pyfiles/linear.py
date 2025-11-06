@@ -1,0 +1,1 @@
+flake noqa F r Quantized Reference Modules This module process migration ` torch ao nn quantized reference ` kept here compatibility while migration process ongoing If you adding new entry functionality please add appropriate file under ` torch ao nn quantized reference ` while adding statement here torch ao nn quantized reference modules linear Linear

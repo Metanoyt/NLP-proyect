@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch _C _lazy reset Resets all metric counters torch _C _lazy _reset_metrics counter_names Retrieves all currently active counter names torch _C _lazy _counter_names counter_value name str Return value counter specified name torch _C _lazy _counter_value name metrics_report Return combined lazy core backend metric report torch _C _lazy _metrics_report

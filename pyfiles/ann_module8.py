@@ -1,0 +1,1 @@
+Test ` no_type_check ` see https bugs python org issue NoTypeCheck_Outer Inner x int NoTypeCheck_function arg int - int

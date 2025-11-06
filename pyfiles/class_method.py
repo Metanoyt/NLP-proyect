@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch ClassMethod torch nn Module Class methods inlined during tracing classmethod method cls x x + __init__ - None super __init__ linear = torch nn Linear forward x x = linear x method x __class__ method x type method x example_args = torch randn model = ClassMethod

@@ -1,0 +1,1 @@
+r It s used check basic rnn features cuda For example would throw exception missing some components missing torch torch nn nn device = torch device cuda rnn = nn RNN device inputs = torch randn device h = torch randn device output hn = rnn inputs h

@@ -1,0 +1,1 @@
+torch nn nn torch nn functional F MNIST nn Module __init__ - None super __init__ conv = nn Conv d kernel_size= conv = nn Conv d kernel_size= conv _drop = nn Dropout d fc = nn Linear fc = nn Linear forward x x = F relu F max_pool d conv x x = F relu F max_pool d conv _drop conv x x = x view - x = F relu fc x x = F dropout x training=self training x = fc x F log_softmax x dim=

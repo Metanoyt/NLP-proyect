@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch StaticIf torch nn Module ` ` statement static predicate value should traced through taken branch forward x len x shape == x + torch ones x example_args = torch randn tags = python control-flow model = StaticIf

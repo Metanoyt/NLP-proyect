@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch torch _export db case SupportLevel torch export Dim DynamicShapeRound torch nn Module Calling round dynamic shapes supported forward x x round x shape x = torch randn dim _x = Dim dim _x example_args = x tags = torch dynamic-shape python builtin support_level = SupportLevel NOT_SUPPORTED_YET dynamic_shapes = x dim _x model = DynamicShapeRound

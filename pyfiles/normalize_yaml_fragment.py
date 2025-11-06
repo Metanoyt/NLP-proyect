@@ -1,0 +1,1 @@
+usr bin env python os sys yaml Need modules lie upward-relative path sys path append os path dirname sys path cimodel lib miniyaml miniyaml regurgitate depth use_pyyaml_formatter=False data = yaml safe_load sys stdin use_pyyaml_formatter output = yaml dump data sort_keys=True sys stdout write output miniyaml render sys stdout data depth __name__ == __main__ regurgitate

@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch NestedFunction torch nn Module Nested functions traced through Side effects global captures supported though forward b x = + b z = - b closure y nonlocal x x += x y + z closure x example_args = torch randn torch randn tags = python closure model = NestedFunction

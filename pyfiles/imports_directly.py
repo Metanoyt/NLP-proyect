@@ -1,0 +1,1 @@
+torch subpackage_ subsubpackage_ important_string ImportsDirectlyFromSubSubPackage torch nn Module key = important_string forward inp torch sum inp

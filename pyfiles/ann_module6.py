@@ -1,0 +1,1 @@
+Tests top-level ClassVar allowed __future__ annotations typing ClassVar wrong ClassVar int =

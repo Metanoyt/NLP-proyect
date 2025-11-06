@@ -1,0 +1,1 @@
+mypy disable-error-code= no-untyped-def flake noqa torch CUdeviceptr pass CUstream __init__ v pass CUresult CUDA_SUCCESS = True nvrtc pass cuDeviceGetCount CUresult CUDA_SUCCESS torch cuda device_count

@@ -1,0 +1,1 @@
+warnings torch torch jit ignore type ignore misc _scripted_functional_optimizer_deprecation_warning stacklevel int = - None warnings catch_warnings warnings simplefilter always warnings warn ` TorchScript ` support functional optimizers deprecated will removed future PyTorch release Consider using ` torch compile ` optimizer instead DeprecationWarning stacklevel=stacklevel +

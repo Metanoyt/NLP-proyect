@@ -1,0 +1,1 @@
+Copyright c Facebook Inc its affiliates All rights reserved This source code licensed under BSD-style license found LICENSE file root directory source tree __all__ = make_fx dispatch_trace PythonKeyTracer pythonkey_decompose torch fx experimental proxy_tensor decompose dispatch_trace make_fx PythonKeyTracer pythonkey_decompose = decompose

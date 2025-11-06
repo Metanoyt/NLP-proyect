@@ -1,0 +1,1 @@
+Module testing behavior generics across different modules typing TypeVar Generic Optional TypeAliasType default_a Optional A = None default_b Optional B = None T = TypeVar T A Generic T some_b B B Generic T A Generic T pass my_inner_a B A my_inner_a A my_outer_a A unless somebody calls get_type_hints localns=B __dict__ type Alias = int OldStyle = TypeAliasType OldStyle int

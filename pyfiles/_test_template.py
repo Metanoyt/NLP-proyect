@@ -1,0 +1,1 @@
+Owner s oncall distributed torch testing _internal common_distributed MultiProcContinuousTest torch testing _internal common_utils run_tests TestTemplate MultiProcContinuousTest testABC print f rank rank world_size testing ABC testDEF print f rank rank world_size testing DEF __name__ == __main__ run_tests

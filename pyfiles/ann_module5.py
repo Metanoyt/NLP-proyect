@@ -1,0 +1,1 @@
+Used test_typing verify Final wrapped ForwardRef works __future__ annotations typing Final name Final str = final MyClass value Final =

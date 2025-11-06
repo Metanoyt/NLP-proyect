@@ -1,0 +1,1 @@
+os sys torch _export db examples examples TEMPLATE = torch case_name x __name__ == __main__ assert len sys argv == root_dir = examples __name__ replace assert os path exists root_dir open os path join root_dir sys argv + py w f print Writing f name f write TEMPLATE format case_name=sys argv

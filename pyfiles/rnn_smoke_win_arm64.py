@@ -1,0 +1,1 @@
+r It s used check basic rnn features cpu-only For example would throw exception missing some components missing torch torch nn nn rnn = nn RNN inputs = torch randn h = torch randn output hn = rnn inputs h

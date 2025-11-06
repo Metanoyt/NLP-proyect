@@ -1,0 +1,1 @@
+collections abc Callable typing Generic Optional TypeVar R = TypeVar R Thunk Generic R A simple lazy evaluation implementation lets you delay execution function It properly handles releasing function once forced f Optional Callable R r Optional R __slots__ = f r __init__ f Callable R f = f r = None force - R f None r type ignore return-value r = f f = None r

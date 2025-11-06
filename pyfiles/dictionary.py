@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch Dictionary torch nn Module Dictionary structures inlined flattened along tracing forward x y elements = elements x = x x y = y elements x y y example_args = torch randn torch tensor tags = python data-structure model = Dictionary

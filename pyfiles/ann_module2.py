@@ -1,0 +1,1 @@
+Some correct syntax variable annotation here More examples test_grammar test_parser typing no_type_check ClassVar i int = j int x float = i f C C f new_attr object = object C __init__ x int - None x = x c = C c new_attr int = __annotations__ = no_type_check NTC meth param complex - None CV var ClassVar CV CV var = CV

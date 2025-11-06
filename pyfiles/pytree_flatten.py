@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch torch utils _pytree pytree PytreeFlatten torch nn Module Pytree PyTorch can captured TorchDynamo forward x y _spec = pytree tree_flatten x y + example_args = torch randn torch randn model = PytreeFlatten

@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch functorch experimental control_flow map DynamicShapeMap torch nn Module functorch map maps function over first tensor dimension forward xs y body x y x + y map body xs y example_args = torch randn torch randn tags = torch dynamic-shape torch map model = DynamicShapeMap

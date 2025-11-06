@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch A classmethod func cls x + x TypeReflectionMethod torch nn Module type calls custom objects followed attribute accesses allowed due its overly dynamic nature forward x = A type func x example_args = torch randn tags = python builtin model = TypeReflectionMethod

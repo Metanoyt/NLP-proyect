@@ -1,0 +1,1 @@
+global_flag = False set_flag_true global global_flag global_flag = True set_flag_false global global_flag global_flag = False

@@ -1,0 +1,1 @@
+torch utils benchmark Timer time_with_torch_timer fn args kwargs=None iters= kwargs = kwargs env = args args kwargs kwargs fn fn fn_call = fn args kwargs Measure end-to-end time timer = Timer stmt=f fn_call globals=env tt = timer timeit iters tt

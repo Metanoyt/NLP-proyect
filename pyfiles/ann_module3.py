@@ -1,0 +1,1 @@
+Correct syntax variable annotation should fail runtime certain manner More examples test_grammar test_parser f_bad_ann __annotations__ = C_OK __init__ x int - None x no_such_name = x This one OK proposed Guido D_bad_ann __init__ x int - None sfel y int = g_bad_ann no_such_name attr int =

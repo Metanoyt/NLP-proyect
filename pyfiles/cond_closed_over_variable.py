@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch functorch experimental control_flow cond CondClosedOverVariable torch nn Module torch cond supports branches closed over arbitrary variables forward pred x true_fn val x false_fn val x - cond pred true_fn false_fn x + example_args = torch tensor True torch randn tags = torch cond python closure model = CondClosedOverVariable

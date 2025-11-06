@@ -1,0 +1,1 @@
+result = subpackage_ PackageBSubpackage Object_ __slots__ = obj __init__ obj obj = obj return_result result

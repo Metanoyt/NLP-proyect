@@ -1,0 +1,1 @@
+mypy ignore-errors div_int_future div_float_future

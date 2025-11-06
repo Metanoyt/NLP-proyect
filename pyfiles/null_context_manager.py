@@ -1,0 +1,1 @@
+mypy allow-untyped-defs contextlib torch NullContextManager torch nn Module Null context manager Python will traced out forward x Null context manager Python will traced out ctx = contextlib nullcontext ctx x sin + x cos example_args = torch randn tags = python context-manager model = NullContextManager

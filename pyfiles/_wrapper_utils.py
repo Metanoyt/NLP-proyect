@@ -1,0 +1,1 @@
+torch _WrapperModule torch nn Module __init__ f type ignore no-untyped-def super __init__ f = f forward args kwargs type ignore no-untyped-def f args kwargs

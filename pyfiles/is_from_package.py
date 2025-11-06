@@ -1,0 +1,1 @@
+types ModuleType typing Any _mangling is_mangled is_from_package obj Any - bool Return whether object loaded package Note packaged objects externed modules will ` ` False ` ` type obj ModuleType is_mangled obj __name__ is_mangled type obj __module__

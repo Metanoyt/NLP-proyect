@@ -1,0 +1,1 @@
+r Intrinsic QAT Modules This file process migration ` torch ao nn intrinsic qat ` kept here compatibility while migration process ongoing If you adding new entry functionality please add appropriate file under ` torch ao nn intrinsic qat modules ` while adding statement here torch ao nn intrinsic qat LinearBn d __all__ = LinearBn d

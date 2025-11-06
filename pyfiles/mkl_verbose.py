@@ -1,0 +1,1 @@
+argparse torch run_model level m = torch nn Linear input = torch randn torch backends mkl verbose level m input __name__ == __main__ parser = argparse ArgumentParser parser add_argument -- verbose-level default= type=int args = parser parse_args try run_model args verbose_level except Exception e print e

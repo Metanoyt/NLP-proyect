@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch ConstrainAsValueExample torch nn Module If value known tracing time you can provide hint so we can trace further Please look torch _check API forward x y = x item torch _check = torch _check = y sin y cos example_args = torch tensor torch randn tags = torch dynamic-value torch escape-hatch model = ConstrainAsValueExample

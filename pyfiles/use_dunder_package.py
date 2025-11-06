@@ -1,0 +1,1 @@
+__torch_package__ dir is_from_package True is_from_package False

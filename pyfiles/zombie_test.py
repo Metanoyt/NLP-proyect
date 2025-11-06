@@ -1,0 +1,1 @@
+usr bin env python Owner s oncall r p Copyright c Facebook Inc its affiliates All rights reserved This source code licensed under BSD-style license found LICENSE file root directory source tree time __name__ == __main__ time sleep print finished work

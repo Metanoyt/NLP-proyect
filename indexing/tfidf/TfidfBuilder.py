@@ -18,6 +18,7 @@ class TfidfBuilder:
         if tfidf == None:
             self.tfidf = []
             self.__idf = dict()
+            print("Construyendo modelo TF-IDF...")
             self.__constructTFIDF()
             return
         tfidf = tfidf
@@ -57,7 +58,11 @@ class TfidfBuilder:
         if self.DEBUG:
             print("Obteniendo TF's")
         dir_list = os.listdir(self.PATH)
-        doc_list = [(self.PATH + "/" + i) for i in dir_list if i.endswith(".txt")]
+        if self.DEBUG:
+            print("Cantidad de carpetas: " + str(len(dir_list)))
+        doc_list = [(self.PATH + "/" + i) for i in dir_list if i.endswith(".py")]
+        if self.DEBUG:
+            print("Cantidad de documentos: " + str(len(doc_list)))
         tf_list = []
         for i in doc_list:
             tf_list.append(self.getTFforFile(i))

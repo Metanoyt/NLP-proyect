@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch UserInputMutation torch nn Module Directly mutate user input forward forward x x mul_ x cos example_args = torch randn tags = torch mutation model = UserInputMutation

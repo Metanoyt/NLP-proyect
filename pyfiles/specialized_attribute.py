@@ -1,0 +1,1 @@
+mypy allow-untyped-defs enum Enum torch Animal Enum COW = moo SpecializedAttribute torch nn Module Model attributes specialized __init__ - None super __init__ = moo b = forward x == Animal COW value x x + b raise ValueError bad example_args = torch randn model = SpecializedAttribute

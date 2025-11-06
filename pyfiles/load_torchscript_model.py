@@ -1,0 +1,1 @@
+sys torch __name__ == __main__ script_mod = torch jit load sys argv weights_only=False loading sharded model mod = torch load sys argv + orig weights_only=False print script_mod inp = torch rand _ = mod inp sys exit

@@ -1,0 +1,1 @@
+glob os requires_files = glob glob requirements txt requires_files += pyproject toml file requires_files os path exists file print f skipping missing file continue print f cleaning file open file f lines = f readlines torch join lines lower print removed open file w f line lines torch line lower f write line print f done cleaning file print

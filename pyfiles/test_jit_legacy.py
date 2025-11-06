@@ -1,0 +1,1 @@
+Owner s oncall jit sys sys argv append -- jit-executor=legacy torch testing _internal common_utils parse_cmd_line_args run_tests __name__ == __main__ The value GRAPH_EXECUTOR depends command line arguments so make sure they re parsed before instantiating tests parse_cmd_line_args test_jit noqa F F __name__ == __main__ run_tests

@@ -1,0 +1,1 @@
+typing_extensions assert_type torch torch distributions Tensor dist = distributions Normal assert_type dist mean Tensor dist = distributions MultivariateNormal torch zeros torch eye assert_type dist covariance_matrix Tensor

@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch DynamicShapeAssert torch nn Module A basic usage python assertion forward x assertion error message assert x shape f x shape greater than assertion without error message assert x shape x example_args = torch randn tags = python assert model = DynamicShapeAssert

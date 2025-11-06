@@ -1,0 +1,1 @@
+torch global = torch ones reset_state global global global = torch ones fn val call global global global += val = val + global val = call val val = val + val

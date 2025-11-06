@@ -1,0 +1,1 @@
+torch avg_pool = torch nn AdaptiveAvgPool d None reveal_type avg_pool E AdaptiveAvgPool d avg_pool = torch nn AdaptiveAvgPool d None reveal_type avg_pool E AdaptiveAvgPool d max_pool = torch nn AdaptiveMaxPool d None reveal_type max_pool E AdaptiveMaxPool d max_pool = torch nn AdaptiveMaxPool d None reveal_type max_pool E AdaptiveMaxPool d

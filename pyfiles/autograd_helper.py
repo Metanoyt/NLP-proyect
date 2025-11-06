@@ -1,0 +1,1 @@
+Owner s module onnx torch Autograd function replica autograd function test_utility_funs py test_autograd_module_name CustomFunction torch autograd Function staticmethod forward ctx input ctx save_for_backward input input clamp min= staticmethod backward ctx grad_output input = ctx saved_tensors grad_input = grad_output clone grad_input input = grad_input

@@ -1,0 +1,1 @@
+mypy allow-untyped-defs torch _C _get_cpp_backtrace get_cpp_backtrace frames_to_skip= maximum_number_of_frames= - str r Return string containing C++ stack trace current thread Args frames_to_skip int number frames skip top stack maximum_number_of_frames int maximum number frames _get_cpp_backtrace frames_to_skip maximum_number_of_frames

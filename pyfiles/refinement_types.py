@@ -1,0 +1,1 @@
+Equality __init__ lhs object rhs object lhs = lhs rhs = rhs __str__ - str f lhs = rhs __repr__ - str f lhs = rhs __eq__ other object - bool isinstance other Equality lhs == other lhs rhs == other rhs False

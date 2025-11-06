@@ -1,0 +1,1 @@
+functools partial multipledispatch dispatch _dispatch type ignore namespace = type ignore var-annotated dispatch = partial _dispatch namespace=namespace

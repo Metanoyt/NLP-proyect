@@ -1,0 +1,1 @@
+torch This file contains definitions script classes They used test_jit py test ScriptClass imports torch jit script noqa B FooSameName noqa B __init__ y y = y

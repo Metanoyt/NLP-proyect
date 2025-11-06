@@ -1,0 +1,1 @@
+result = package_a subpackage PackageASubpackageObject pass leaf_function b + b

@@ -1,0 +1,1 @@
+typing_extensions deprecated torch Preserved only BC reasons deprecated ` torch _streambase _StreamBase ` deprecated Please use ` torch Stream ` instead category=FutureWarning _StreamBase torch Stream pass deprecated ` torch _streambase _EventBase ` deprecated Please use ` torch Event ` instead category=FutureWarning _EventBase torch Event pass

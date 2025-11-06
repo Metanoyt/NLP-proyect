@@ -1,0 +1,1 @@
+torch t = torch tensor t_sort = t sort t_sort == noqa B t_sort indices == noqa B t_sort values == noqa B reveal_type t_sort E torch return_types sort t_qr = torch linalg qr t t_qr shape == noqa B t_qr Q shape == noqa B TODO Fixme should Tuple Tensor Tensor fallback=torch return_types qr reveal_type t_qr E Any

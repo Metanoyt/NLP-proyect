@@ -17,7 +17,7 @@ from HexSaver import HexSaver
 from TfidfBuilder  import TfidfBuilder
 
 
-repo_base_path = "NLP-proyect\sample_projects"
+repo_base_path = "./sample_projects"
 processing_base_path = "./pyfiles/"
 original_files_path = "./original_files/"
 
@@ -43,7 +43,7 @@ def remove_unwanted_terms(tokens):
         Entradas: Un texto o cadena de carácteres
         Salida: Una lista de tokens
         """
-        useless_terms = ['def', 'return', 'if', 'for', 'in', 'and', 'or', 'not', 'is', 'to', 'the', 'a', 'an', 'of', 'on', 'with', 'as', 'by', 'this', 'that', 'it', 'from', 'at', 'be', 'are', 'was', 'were', 'but', 'else', 'elif', 'import', 'class', 'self']
+        useless_terms = ['def', '#', 'return', 'if', 'for', 'in', 'and', 'or', 'not', 'is', 'to', 'the', 'a', 'an', 'of', 'on', 'with', 'as', 'by', 'this', 'that', 'it', 'from', 'at', 'be', 'are', 'was', 'were', 'but', 'else', 'elif', 'import', 'class', 'self']
         
         filtered_tokens = [token for token in tokens if token not in useless_terms]
         return filtered_tokens
@@ -87,24 +87,29 @@ def move_files_and_process():
 def main():
 
     # Get all .py files in the repo and move them to processing directory after preprocessing
-    docs = move_files_and_process() 
+    # docs = move_files_and_process() # Note: not needed for TFIDF building, once preprocessing is done, we can build directly
 
     tfidf_builder = TfidfBuilder(processing_base_path)
+    print("TF-IDF model built successfully.")
+    print(f"Number of items in state: {len(tfidf_builder.get_tfidf())}")
 
     #TODO: Super importante, necesitamos pasar el documento original para el contexto, no el preprocesado
     #display
-    for doc in docs:
-        print(f"TF-IDF for document: {doc}")
-        tfidf_vector = tfidf_builder.getTFforFile(doc)
-        for term, score in tfidf_vector.items()[:10]:  # Display top 10 terms
-            print(f"Term: {term}, TF-IDF: {score}")
-        print("\n")
+    #for doc in docs:
+        #print(f"TF-IDF for document: {doc}")
+        #tfidf_vector = tfidf_builder.getTFforFile(doc)
+        #print(tfidf_vector[:10])
+        #for term, score in tfidf_vector[:10]:  # Display top 10 terms
+        #    print(f"Term: {term}, TF-IDF: {score}")
+        #print("\n")
 
     # Save the TFIDF model to disk
     tfid_state = tfidf_builder.get_tfidf()
     
-    tfidf_save_path = "./tfidf_model_state"
+    # Get execution path
+    tfidf_save_path = "indexing/tfidf/state/tfidf_model_state.hex"
     HexSaver.saveState(tfidf_save_path, tfid_state)
+    print(f"TF-IDF model state saved to {tfidf_save_path}")
 
 if __name__ == "__main__":
     main()

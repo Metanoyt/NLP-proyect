@@ -1,0 +1,1 @@
+torch bar This file contains definitions script classes They used test_jit py test ScriptClass imports torch jit script noqa B FooSameName __init__ x x = x nested = bar FooSameName x
