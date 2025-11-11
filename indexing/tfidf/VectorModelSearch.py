@@ -2,10 +2,8 @@ import math
 import re
 import nltk
 from os.path import exists
-from indexing.tfidf.HexSaver import HexSaver
-
-from indexing.tfidf.TfidfBuilder import TfidfBuilder
-
+from HexSaver import HexSaver
+from TfidfBuilder  import TfidfBuilder
 #SAVE_PATH = './search/SavedStates'
 #COLECTION_FOLDER = './search/archivos'
 #RESULT_CANT = 5

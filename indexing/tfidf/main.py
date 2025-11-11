@@ -15,6 +15,7 @@ except Exception:
 
 from HexSaver import HexSaver
 from TfidfBuilder  import TfidfBuilder
+from VectorModelSearch import VectorModelSearch
 
 
 repo_base_path = "./sample_projects"
@@ -83,15 +84,31 @@ def move_files_and_process():
                 
     return list_of_files
 
+def gather_and_tokenize_original_selection(selected_files, tokenizer):
+    file_texts = {}
+    for file_path in selected_files:
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                file_text = f.read()
+        except UnicodeDecodeError:
+            print(f"Could not read file {file_path}, skipping.")
+            continue
+        except Exception as e:
+            print(f"An error occurred while reading file {file_path}: {e}")
+            continue
+        tokens = tokenizer.tokenize(file_text)
+        file_texts[file_path] = tokens
+
+    return file_texts
 
 def main():
 
     # Get all .py files in the repo and move them to processing directory after preprocessing
     # docs = move_files_and_process() # Note: not needed for TFIDF building, once preprocessing is done, we can build directly
 
-    tfidf_builder = TfidfBuilder(processing_base_path)
-    print("TF-IDF model built successfully.")
-    print(f"Number of items in state: {len(tfidf_builder.get_tfidf())}")
+    #tfidf_builder = TfidfBuilder(processing_base_path)
+    #print("TF-IDF model built successfully.")
+    #print(f"Number of items in state: {len(tfidf_builder.get_tfidf())}")
 
     #TODO: Super importante, necesitamos pasar el documento original para el contexto, no el preprocesado
     #display
@@ -104,12 +121,37 @@ def main():
         #print("\n")
 
     # Save the TFIDF model to disk
-    tfid_state = tfidf_builder.get_tfidf()
+    # tfid_state = tfidf_builder.get_tfidf()
     
     # Get execution path
     tfidf_save_path = "indexing/tfidf/state/tfidf_model_state.hex"
-    HexSaver.saveState(tfidf_save_path, tfid_state)
-    print(f"TF-IDF model state saved to {tfidf_save_path}")
+    # HexSaver.saveState(tfidf_save_path, tfid_state)
+    
+    # print(f"TF-IDF model state saved to {tfidf_save_path}")
+
+
+    searcher = VectorModelSearch(
+        savePath=tfidf_save_path,
+        colectionFolder=processing_base_path,
+        resultCant=5
+    )
+
+    query = "ctx grad_output tensor_meta dtensor_spec.placements"
+    results = searcher.search(query)
+    selected_files = []
+    print(f"Search results for query: '{query}'")
+    for doc in results:
+        original_file_path = os.path.join(original_files_path, doc)
+        selected_files.append(original_file_path)
+        print(f"Document: {original_file_path}")
+    
+    # Get original files and tokenize them
+    file_texts = gather_and_tokenize_original_selection(selected_files, tokenizer)
+    for file_path, tokens in file_texts.items():
+        print(f"\nOriginal content tokens for file: {file_path}")
+        print(tokens[:5])  # Print first 50 tokens for brevity
+
+    
 
 if __name__ == "__main__":
     main()
