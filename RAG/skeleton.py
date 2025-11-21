@@ -16,5 +16,7 @@ def review_code(code_snippet):
     # return response
     return prompt  # Placeholder return for demonstration purposes
 
-
-Token: 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
+# Standards for pytorch
+# https://peps.python.org/pep-0008/
+# https://docs.pytorch.org/tutorials/
+# https://github.com/IgorSusmelj/pytorch-styleguide
