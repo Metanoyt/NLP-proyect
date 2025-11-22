@@ -27,7 +27,9 @@ embedding_model_name = "sentence-transformers/(something)"
 
 def splitFileByBlockOfCode(file_txt: str) -> list:
     """
-    Splits a python file and collects the blocks of text that compose it, ignoring imports.
+    Funcion para dividir un archivo python y recolectar los bloques de texto que lo componen, ignorando los imports.
+    Entradas: El texto completo del archivo
+    Salida: Una lista de bloques de codigo (funciones, clases, etc)
     """
     blocks = []
     current_block = []
@@ -67,7 +69,10 @@ def splitFileByBlockOfCode(file_txt: str) -> list:
 
 def cleanTextChunk(file_txt:str, tokenizer=wordTokenizer):
     """
-    Preprocess the document by tokenizing and removing unwanted terms.
+    Funcion para limpiar un bloque de codigo de texto irrelevante
+
+    Entradas: El texto completo del bloque de codigo
+    Salida: El texto limpio del bloque de codigo
     """
     
     txt_no_special = re.sub(r"""[ 0-9 !?',".-<>(){}!\]:@%;&*/[/]""", " ", file_txt)
@@ -99,24 +104,33 @@ def loadLocalDataset(path_folder) -> Dataset:
         for file in files:
             if file.endswith(".py"):
                 file_path = os.path.join(root, file)
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    file_text = f.read()
-                blocks = splitFileByBlockOfCode(file_text)
-                for block in blocks:
-                    cleaned_text = cleanTextChunk(block)
-                    important_terms = removeUnwantedTerms(wordTokenizer.tokenize(block))
-                    data['file_name'].append(file)
-                    data['text'].append(cleaned_text)
-                    data['important_terms'].append(important_terms)
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        file_text = f.read()
+                    blocks = splitFileByBlockOfCode(file_text)
+                    for block in blocks:
+                        cleaned_text = cleanTextChunk(block)
+                        important_terms = removeUnwantedTerms(wordTokenizer.tokenize(block))
+                        data['file_name'].append(file)
+                        data['text'].append(cleaned_text)
+                        data['important_terms'].append(important_terms)
+                except UnicodeDecodeError:
+                    print(f"Could not read file {file}, skipping.")
+                    continue
     dataset = Dataset.from_dict(data)
     return dataset
-    # Ideas: dataset should have the file name, the raw text and the important terms as columns
-
 
 def init_dataset(path_folder: str, load_from_hf = True) -> Dataset:
+    """
+    Inicializa el dataset ya sea cargandolo desde HF o procesando los archivos localmente.
+    Parametros:
+        path_folder: Ruta a la carpeta con los archivos a procesar
+        load_from_hf: Booleano que indica si cargar desde HF o procesar localmente
+    Retorna:
+        dataset: El dataset cargado o procesado
+    """
     if not load_from_hf:
         dataset = loadLocalDataset(path_folder)
-        
     else:
         dataset = load_dataset(dataset_hf_id)
     return dataset
@@ -128,14 +142,14 @@ def init_faiss_index(embeddingModel) -> faiss.IndexFlatL2:
 
 
 
-def main(): #TODO: test everything
+def main(): #TODO: finish testing everything
     dataset = init_dataset(repo_base_path, load_from_hf=False)
     
     embedding_model = SentenceTransformer(embedding_model_name)
     
     faiss_index = init_faiss_index(embedding_model)
     
-    embeddings = embedding_model.encode(dataset['text'].tolist(), convert_to_numpy=True)
+    embeddings = embedding_model.encode(dataset['important_terms'].tolist(), convert_to_numpy=True) # Here we avoid embeding all the text, only the important terms that define the usage of the code block.
     
     faiss_index.add(embeddings)
     
