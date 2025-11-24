@@ -1,0 +1,12 @@
+{
+  "pr_id": 168893,
+  "title": "[dynamo] Fix local test failures for dynamo/test_repros.py",
+  "description": "This pull request fixes local test failures in the Dynamo `test_repros.py` suite. The change introduces logic to preserve and restore the default device (CPU/CUDA) during tracing, ensuring tests leave no side-effects on global device state.",
+  "files_changed": [
+    {
+      "file_path": "test/dynamo/test_repros.py",
+      "language": "python",
+      "diff": "diff --git a/test/dynamo/test_repros.py b/test/dynamo/test_repros.py\nindex 9bb94b9a47d40..e60374fc511ba 100644\n--- a/test/dynamo/test_repros.py\n+++ b/test/dynamo/test_repros.py\n@@ -968,6 +968,15 @@ class LRUCacheWarningTests(LoggingTestCase):\n     @requires_cuda\n     @make_logging_test(dynamo=logging.DEBUG)\n     def test_lru_cache_warning_issued_during_tracing(self, records):\n+        prev_default = torch._C._get_default_device()\n+\n+        def _restore_default_device():\n+            if prev_default == \"cpu\":\n+                torch.set_default_device(None)\n+            else:\n+                torch.set_default_device(prev_default)\n+\n+        self.addCleanup(_restore_default_device)\n         torch.set_default_device(\"cuda\")\n \n         @torch.compile(backend=\"eager\")"
+    }
+  ]
+}

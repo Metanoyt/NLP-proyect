@@ -1,0 +1,6 @@
+{
+  "pr_id": "PR_168396_local_map_fix_tags",
+  "file_modified": "torch/_higher_order_ops/local_map.py",
+  "description": "Fixes partitioner tags for forward/backward graphs to ensure correct min-cut boundaries.",
+  "diff": "```diff\n@@ -334,6 +334,13 @@ def fw_with_masks(*args: Any) -> tuple[List[Any], list[bool]]:\n    static_lifetime_input_indices=[],\n\n+    # Fix tags because min-cut does not respect f/bw boundary, breaking\n+    # default partitioner’s assumptions.\n+    for node in new_fw_gm.graph.nodes:\n+        node.meta[\"partitioner_tag\"] = \"is_forward\"\n+    for node in new_bw_gm.graph.nodes:\n+        node.meta[\"partitioner_tag\"] = \"is_backward\"\n+\n    # Propagate meta onto fw/bw graphs, later will be set on proxied nodes\n    new_fw_gm.meta[\"local_map_kwargs\"] = local_map_kwargs\n    new_bw_gm.meta[\"local_map_kwargs\"] = {**local_map_kwargs}\n```"
+}
