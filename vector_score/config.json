@@ -1,5 +1,5 @@
 {
     "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
     "embedding_dimension": 384,
-    "num_vectors": 107896
+    "num_vectors": 22726
 }
