@@ -1,0 +1,11 @@
+PR		Status								Comment
+168396  Closed No merged >> Able to merge
+168893  Closed No merged >> Able to merge
+167264  Closed No merged >> Able to merge
+169001	Open Changes Approved
+170101	Generic								Bad Logic
+170102	Generic								API BROKEN-REJECT-MISSING INPUT
+170103	Generic								Bad Test
+170104	Generic								Not necessary
+170105	Generic								Unsafe/Reject/ Validation Removed
+
