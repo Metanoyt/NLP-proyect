@@ -1,1 +1,239 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 170112\nDescription:\nIntroduces tabs in indentation.\n\nModified Files:\ntorch/utils/data/dataloader.py\n\nDiff:\n@@ class DataLoader:\n-        return self._iterator\n+\treturn self._iterator  # tab used\n\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\nclass Serializer(torch.nn.Module):\n    def __init__(self, data):\n        super().__init__()\n        for key in data:\n            setattr(self, key, data[key])\n\n\n[CONTEXT BLOCK 2]\nclass Serializer(torch.nn.Module):\n    def __init__(self, data):\n        super().__init__()\n        for key in data:\n            setattr(self, key, data[key])\n\n\n[CONTEXT BLOCK 3]\ndef get_worker_info() -> Optional[WorkerInfo]:\n    r\"\"\"Returns the information about the current\n    :class:`~torch.utils.data.DataLoader` iterator worker process.\n\n\n[CONTEXT BLOCK 4]\nclass DummyDataset(torch.utils.data.Dataset):\n    def __init__(self) -> None:\n        self.data = list(range(10))\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does it break flow, variables, or types in the context?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case function/variable naming\n   - indentation (spaces, no tabs)\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PyTorch policies\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No leaking of tensor contents (debug prints)\n   - No dead code\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES | REJECT>\n---------------------\n\n\n---------------------\n### PR ID: 170112\nDescription:\nIntroduces tabs in indentation.\n\nModified Files:\ntorch/utils/data/dataloader.py\n\nDiff:\n@@ class DataLoader:\n-        return self._iterator\n+\treturn self._iterator  # tab used\n\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\nclass Serializer(torch.nn.Module):\n    def __init__(self, data):\n        super().__init__()\n        for key in data:\n            setattr(self, key, data[key])\n\n\n[CONTEXT BLOCK 2]\nclass Serializer(torch.nn.Module):\n    def __init__(self, data):\n        super().__init__()\n        for key in data:\n            setattr(self, key, data[key])\n\n\n[CONTEXT BLOCK 3]\ndef get_worker_info() -> Optional[WorkerInfo]:\n    r\"\"\"Returns the information about the current\n    :class:`~torch.utils.data.DataLoader` iterator worker process.\n\n\n[CONTEXT BLOCK 4]\nclass DummyDataset(torch.utils.data.Dataset):\n    def __init__(self) -> None:\n        self.data = list(range(10))\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does it break flow, variables, or types in the context?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case function/variable naming\n   - indentation (spaces, no tabs)\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PyTorch policies\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No leaking of tensor contents (debug prints)\n   - No dead code\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns:\n- No issues found.\n5. Final Verdict: APPROVE\n\n---------------------\n### PR ID: 170112\nDescription:\nIntroduces tabs in indentation.\n\nModified Files:\ntorch/utils/data/dataloader.py\n\nDiff:\n@@ class DataLoader:\n-        return self._iterator\n+\treturn self._iterator  # tab used\n\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\nclass Serializer(torch.nn.Module):\n    def __init__(self, data):\n        super().__init__()\n        for key in data:\n            setattr(self, key, data[key])\n\n\n[CONTEXT BLOCK 2]\nclass Serializer(torch.nn.Module):\n    def __init__(self, data):\n        super().__init__()\n        for key in data:\n            setattr(self, key, data[key])\n\n\n[CONTEXT BLOCK 3]\ndef get_worker_info() -> Optional[WorkerInfo]:\n    r\"\"\"Returns the information about the current\n    :class:`~torch.utils.data.DataLoader` iterator worker process.\n\n\n[CONTEXT BLOCK 4]\nclass DummyDataset(torch.utils.data.Dataset):\n    def __init__(self) -> None:\n        self.data = list(range(10))\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors"
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 170112
+Description:
+Introduces tabs in indentation.
+
+Modified Files:
+torch/utils/data/dataloader.py
+
+Diff:
+@@ class DataLoader:
+-        return self._iterator
++\treturn self._iterator  # tab used
+
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+class Serializer(torch.nn.Module):
+    def __init__(self, data):
+        super().__init__()
+        for key in data:
+            setattr(self, key, data[key])
+
+
+[CONTEXT BLOCK 2]
+class Serializer(torch.nn.Module):
+    def __init__(self, data):
+        super().__init__()
+        for key in data:
+            setattr(self, key, data[key])
+
+
+[CONTEXT BLOCK 3]
+def get_worker_info() -> Optional[WorkerInfo]:
+    r\"\"\"Returns the information about the current
+    :class:`~torch.utils.data.DataLoader` iterator worker process.
+
+
+[CONTEXT BLOCK 4]
+class DummyDataset(torch.utils.data.Dataset):
+    def __init__(self) -> None:
+        self.data = list(range(10))
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does it break flow, variables, or types in the context?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case function/variable naming
+   - indentation (spaces, no tabs)
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PyTorch policies
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No leaking of tensor contents (debug prints)
+   - No dead code
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES | REJECT>
+---------------------
+
+
+---------------------
+### PR ID: 170112
+Description:
+Introduces tabs in indentation.
+
+Modified Files:
+torch/utils/data/dataloader.py
+
+Diff:
+@@ class DataLoader:
+-        return self._iterator
++\treturn self._iterator  # tab used
+
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+class Serializer(torch.nn.Module):
+    def __init__(self, data):
+        super().__init__()
+        for key in data:
+            setattr(self, key, data[key])
+
+
+[CONTEXT BLOCK 2]
+class Serializer(torch.nn.Module):
+    def __init__(self, data):
+        super().__init__()
+        for key in data:
+            setattr(self, key, data[key])
+
+
+[CONTEXT BLOCK 3]
+def get_worker_info() -> Optional[WorkerInfo]:
+    r\"\"\"Returns the information about the current
+    :class:`~torch.utils.data.DataLoader` iterator worker process.
+
+
+[CONTEXT BLOCK 4]
+class DummyDataset(torch.utils.data.Dataset):
+    def __init__(self) -> None:
+        self.data = list(range(10))
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does it break flow, variables, or types in the context?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case function/variable naming
+   - indentation (spaces, no tabs)
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PyTorch policies
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No leaking of tensor contents (debug prints)
+   - No dead code
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns:
+- No issues found.
+5. Final Verdict: APPROVE
+
+---------------------
+### PR ID: 170112
+Description:
+Introduces tabs in indentation.
+
+Modified Files:
+torch/utils/data/dataloader.py
+
+Diff:
+@@ class DataLoader:
+-        return self._iterator
++\treturn self._iterator  # tab used
+
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+class Serializer(torch.nn.Module):
+    def __init__(self, data):
+        super().__init__()
+        for key in data:
+            setattr(self, key, data[key])
+
+
+[CONTEXT BLOCK 2]
+class Serializer(torch.nn.Module):
+    def __init__(self, data):
+        super().__init__()
+        for key in data:
+            setattr(self, key, data[key])
+
+
+[CONTEXT BLOCK 3]
+def get_worker_info() -> Optional[WorkerInfo]:
+    r\"\"\"Returns the information about the current
+    :class:`~torch.utils.data.DataLoader` iterator worker process.
+
+
+[CONTEXT BLOCK 4]
+class DummyDataset(torch.utils.data.Dataset):
+    def __init__(self) -> None:
+        self.data = list(range(10))
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors"

@@ -1,1 +1,187 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 168396\nDescription:\nFixes partitioner tags for forward/backward graphs to ensure correct min-cut boundaries.\n\nModified Files:\ntorch/_higher_order_ops/local_map.py\n\nDiff:\n@@ -334,6 +334,13 @@ def fw_with_masks(*args: Any) -> tuple[List[Any], list[bool]]:\n    static_lifetime_input_indices=[],\n\n+    # Fix tags because min-cut does not respect f/bw boundary, breaking\n+    # default partitioner’s assumptions.\n+    for node in new_fw_gm.graph.nodes:\n+        node.meta[\"partitioner_tag\"] = \"is_forward\"\n+    for node in new_bw_gm.graph.nodes:\n+        node.meta[\"partitioner_tag\"] = \"is_backward\"\n+\n    # Propagate meta onto fw/bw graphs, later will be set on proxied nodes\n    new_fw_gm.meta[\"local_map_kwargs\"] = local_map_kwargs\n    new_bw_gm.meta[\"local_map_kwargs\"] = {**local_map_kwargs}\n\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\nclass HopGraphMinCutPartitioner:\n    @staticmethod\n    def create_partitioned_graph(\n        fw_fn: Callable,\n        fw_args: tuple[Union[torch.Tensor, torch.SymInt],...],\n        *,\n        always_recompute_complex_exprs: bool = False,\n    ) -> HopPartitionedGraph:\n        \"\"\"\n        Inputs:\n            - fw_fn: the forward function that we'll use to create a joint graph and partition\n            - fw_args: the flat_args to fw_fn\n            - always_recompute_complex_exprs: when set to True, the bw_gm will do a re-compute\n              for inputs that are complex expressions such that the partitioning boundary\n              only consists of basic symbols and tensors.\n\n\n[CONTEXT BLOCK 2]\ndef _partitioner(gm: torch.fx.GraphModule) -> torch.fx.GraphModule:\n    \"\"\"\n    Graph partitioner that partitions the single device graph\n    to distributed graph\n    \"\"\"\n    for node in gm.graph.nodes:\n        node_sharding = node.meta[\"sharding\"]\n        if node.op == \"placeholder\":\n            out_spec = node_sharding.output_spec\n            local_val = _partition_val(node.meta[\"val\"], out_spec)\n            # update node value\n            node.meta[\"val\"] = local_val\n        elif node.op == \"call_function\":\n            out_spec = node_sharding.output_spec\n            # check if there's misaligned sharding, insert reshard if there is\n            expected_input_specs = node_sharding.input_specs\n            for idx, input_arg in enumerate(node.all_input_nodes):\n                input_arg_sharding = input_arg.meta[\"sharding\"]\n                input_arg_spec = input_arg_sharding.output_spec\n                desired_spec = (\n                    out_spec\n                    if expected_input_specs is None\n                    else expected_input_specs[idx]\n                )\n                if input_arg_spec!= desired_spec:\n                    _insert_reshard_gm(\n                        gm, node, input_arg, input_arg_spec, desired_spec\n                    )\n            # convert output val to its local component\n            output_val = node.meta[\"val\"]\n            node.meta[\"val\"] = _partition_val(output_val, out_spec)\n        elif node.op == \"output\":\n            for input_arg in node.all_input_nodes:\n                # input args of output should be Replicate, otherwise redistribution is needed.\n                input_args_to_check: Sequence[Node] = (\n                    input_arg if isinstance(input_arg, Sequence) else [input_arg]\n                )\n                for arg in input_args_to_check:\n                    arg_sharding = arg.meta[\"sharding\"]\n                    arg_spec = arg_sharding.output_spec\n                    desired_spec = copy.copy(arg_spec)\n                    desired_spec.placements = (Replicate(),)\n                    if arg_spec!= desired_spec:\n                        _insert_reshard_gm(gm, node, arg, arg_spec, desired_spec)\n        else:\n            raise RuntimeError(f\"op code {node} not supported\")\n\n\n[CONTEXT BLOCK 3]\nclass HopPartitionedGraph:\n    def __init__(\n        self,\n        fw_gm: torch.fx.GraphModule,\n        bw_gm: torch.fx.GraphModule,\n        n_fw_outputs: int,\n        n_intermediates: int,\n        no_complex_exprs_at_boundary: bool,\n    ):\n        self.fw_gm = fw_gm\n        self.bw_gm = bw_gm\n        self.n_fw_outputs = n_fw_outputs\n        self.n_intermediates = n_intermediates\n        self.no_complex_exprs_at_boundary = no_complex_exprs_at_boundary\n        self._reorder_fw_output()\n        self._check_partition_boundary()\n\n\n[CONTEXT BLOCK 4]\nclass GraphModule(torch.nn.Module):\n    def forward(self, primals_1: \"f32[8, 8]\"):\n        partitioned_fw_subgraph_0_0 = self.partitioned_fw_subgraph_0_0\n        invoke_subgraph_2 = torch.ops.higher_order.invoke_subgraph(partitioned_fw_subgraph_0_0, 'partitioned_fw_subgraph_0_0', primals_1);  partitioned_fw_subgraph_0_0 = primals_1 = None\n        getitem: \"f32[8, 8]\" = invoke_subgraph_2[0]\n        getitem_1: \"f32[8, 8]\" = invoke_subgraph_2[1];  invoke_subgraph_2 = None\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does it break flow, variables, or types in the context?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case function/variable naming\n   - indentation (spaces, no tabs)\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PyTorch policies\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No leaking of tensor contents (debug prints)\n   - No dead code\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES | REJECT>\n---------------------\n\n\n---------------------\n### PR REVIEWER\n[Your Name]\n[Your Email]\n[Your GitHub Handle]\n[Date]"
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 168396
+Description:
+Fixes partitioner tags for forward/backward graphs to ensure correct min-cut boundaries.
+
+Modified Files:
+torch/_higher_order_ops/local_map.py
+
+Diff:
+@@ -334,6 +334,13 @@ def fw_with_masks(*args: Any) -> tuple[List[Any], list[bool]]:
+    static_lifetime_input_indices=[],
+
++    # Fix tags because min-cut does not respect f/bw boundary, breaking
++    # default partitioner’s assumptions.
++    for node in new_fw_gm.graph.nodes:
++        node.meta[\"partitioner_tag\"] = \"is_forward\"
++    for node in new_bw_gm.graph.nodes:
++        node.meta[\"partitioner_tag\"] = \"is_backward\"
++
+    # Propagate meta onto fw/bw graphs, later will be set on proxied nodes
+    new_fw_gm.meta[\"local_map_kwargs\"] = local_map_kwargs
+    new_bw_gm.meta[\"local_map_kwargs\"] = {**local_map_kwargs}
+
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+class HopGraphMinCutPartitioner:
+    @staticmethod
+    def create_partitioned_graph(
+        fw_fn: Callable,
+        fw_args: tuple[Union[torch.Tensor, torch.SymInt],...],
+        *,
+        always_recompute_complex_exprs: bool = False,
+    ) -> HopPartitionedGraph:
+        \"\"\"
+        Inputs:
+            - fw_fn: the forward function that we'll use to create a joint graph and partition
+            - fw_args: the flat_args to fw_fn
+            - always_recompute_complex_exprs: when set to True, the bw_gm will do a re-compute
+              for inputs that are complex expressions such that the partitioning boundary
+              only consists of basic symbols and tensors.
+
+
+[CONTEXT BLOCK 2]
+def _partitioner(gm: torch.fx.GraphModule) -> torch.fx.GraphModule:
+    \"\"\"
+    Graph partitioner that partitions the single device graph
+    to distributed graph
+    \"\"\"
+    for node in gm.graph.nodes:
+        node_sharding = node.meta[\"sharding\"]
+        if node.op == \"placeholder\":
+            out_spec = node_sharding.output_spec
+            local_val = _partition_val(node.meta[\"val\"], out_spec)
+            # update node value
+            node.meta[\"val\"] = local_val
+        elif node.op == \"call_function\":
+            out_spec = node_sharding.output_spec
+            # check if there's misaligned sharding, insert reshard if there is
+            expected_input_specs = node_sharding.input_specs
+            for idx, input_arg in enumerate(node.all_input_nodes):
+                input_arg_sharding = input_arg.meta[\"sharding\"]
+                input_arg_spec = input_arg_sharding.output_spec
+                desired_spec = (
+                    out_spec
+                    if expected_input_specs is None
+                    else expected_input_specs[idx]
+                )
+                if input_arg_spec!= desired_spec:
+                    _insert_reshard_gm(
+                        gm, node, input_arg, input_arg_spec, desired_spec
+                    )
+            # convert output val to its local component
+            output_val = node.meta[\"val\"]
+            node.meta[\"val\"] = _partition_val(output_val, out_spec)
+        elif node.op == \"output\":
+            for input_arg in node.all_input_nodes:
+                # input args of output should be Replicate, otherwise redistribution is needed.
+                input_args_to_check: Sequence[Node] = (
+                    input_arg if isinstance(input_arg, Sequence) else [input_arg]
+                )
+                for arg in input_args_to_check:
+                    arg_sharding = arg.meta[\"sharding\"]
+                    arg_spec = arg_sharding.output_spec
+                    desired_spec = copy.copy(arg_spec)
+                    desired_spec.placements = (Replicate(),)
+                    if arg_spec!= desired_spec:
+                        _insert_reshard_gm(gm, node, arg, arg_spec, desired_spec)
+        else:
+            raise RuntimeError(f\"op code {node} not supported\")
+
+
+[CONTEXT BLOCK 3]
+class HopPartitionedGraph:
+    def __init__(
+        self,
+        fw_gm: torch.fx.GraphModule,
+        bw_gm: torch.fx.GraphModule,
+        n_fw_outputs: int,
+        n_intermediates: int,
+        no_complex_exprs_at_boundary: bool,
+    ):
+        self.fw_gm = fw_gm
+        self.bw_gm = bw_gm
+        self.n_fw_outputs = n_fw_outputs
+        self.n_intermediates = n_intermediates
+        self.no_complex_exprs_at_boundary = no_complex_exprs_at_boundary
+        self._reorder_fw_output()
+        self._check_partition_boundary()
+
+
+[CONTEXT BLOCK 4]
+class GraphModule(torch.nn.Module):
+    def forward(self, primals_1: \"f32[8, 8]\"):
+        partitioned_fw_subgraph_0_0 = self.partitioned_fw_subgraph_0_0
+        invoke_subgraph_2 = torch.ops.higher_order.invoke_subgraph(partitioned_fw_subgraph_0_0, 'partitioned_fw_subgraph_0_0', primals_1);  partitioned_fw_subgraph_0_0 = primals_1 = None
+        getitem: \"f32[8, 8]\" = invoke_subgraph_2[0]
+        getitem_1: \"f32[8, 8]\" = invoke_subgraph_2[1];  invoke_subgraph_2 = None
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does it break flow, variables, or types in the context?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case function/variable naming
+   - indentation (spaces, no tabs)
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PyTorch policies
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No leaking of tensor contents (debug prints)
+   - No dead code
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES | REJECT>
+---------------------
+
+
+---------------------
+### PR REVIEWER
+[Your Name]
+[Your Email]
+[Your GitHub Handle]
+[Date]"

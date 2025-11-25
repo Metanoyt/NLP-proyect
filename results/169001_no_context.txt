@@ -1,1 +1,142 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 169001\nDescription:\nThis PR introduces a new test (`test_cond_with_replace_view_ops`) validating ReplaceViewOpsWithViewCopyOpsPass under the AOT-Inductor path. Additionally, it fixes incomplete propagation of device metadata (`device_types`, `device_idxs`, `device_type`) inside subgraph lowering in `torch._inductor.graph`, ensuring correct compilation behavior for GPU/Triton backends.\n\nModified Files:\ntest/inductor/test_aot_inductor.py, torch/_inductor/graph.py\n\nDiff:\ndiff --git a/test/inductor/test_aot_inductor.py b/test/inductor/test_aot_inductor.py\nindex fd962c8bea70..8e7a62ae0954 100644\n--- a/test/inductor/test_aot_inductor.py\n+++ b/test/inductor/test_aot_inductor.py\n@@ -21,6 +21,7 @@\n from torch._dynamo.device_interface import get_interface_for_device\n from torch._dynamo.testing import rand_strided, same\n from torch._dynamo.utils import counters\n+from torch._export.passes import ReplaceViewOpsWithViewCopyOpsPass\n from torch._inductor import config\n from torch._inductor.codecache import WritableTempFile\n from torch._inductor.cpp_builder import normalize_path_separator\n@@ -2229,6 +2230,39 @@ def test_cond_with_reinterpret_view_inputs_outputs(self):\n             dynamic_shapes=dynamic_shapes,\n         )\n\n+    @requires_gpu\n+    def test_cond_with_replace_view_ops(self):\n+        if self.device!= GPU_TYPE:\n+            raise unittest.SkipTest(\"requires GPU\")\n+\n+        class CondModelWithViewAndLinear(torch.nn.Module):\n+            def __init__(self):\n+                super().__init__()\n+                self.linear = torch.nn.Linear(4, 4)\n+\n+            def forward(self, cache, x):\n+                def true_fn(cache, x):\n+                    return cache + 1.0\n+\n+                def false_fn(cache, x):\n+                    return self.linear(x).view(1, 2, 4, 4)\n+\n+                cache_is_initialized = (cache!= 0).any()\n+                return torch.cond(cache_is_initialized, false_fn, false_fn, [cache, x])\n+\n+        example_input = (\n+            torch.zeros(1, 2, 4, 4, dtype=torch.float32, device=self.device),\n+            torch.randn(8, 4, dtype=torch.float32, device=self.device),\n+        )\n+        model = CondModelWithViewAndLinear().to(device=self.device)\n+        exported_program = torch.export.export(model, example_input)\n+        program = exported_program.run_decompositions()\n+        gm = ReplaceViewOpsWithViewCopyOpsPass()(program.graph_module).graph_module\n+        with config.patch(\n+            {\"max_autotune\": True, \"max_autotune_gemm_backends\": \"TRITON\"}\n+        ):\n+            _ = torch._inductor.aot_compile(gm, example_input)\n\n\ndiff --git a/torch/_inductor/graph.py b/torch/_inductor/graph.py\nindex 517d6c3e39d1..a16e09f3ca5c 100644\n--- a/torch/_inductor/graph.py\n+++ b/torch/_inductor/graph.py\n@@ -2369,6 +2369,9 @@ def codegen_subgraph(self, parent_graph: GraphLowering) -> None:\n             self.wrapper_code = parent_graph.wrapper_code\n             self.device_ops = parent_graph.device_ops\n             self.cpp_wrapper = parent_graph.cpp_wrapper\n+            self.device_types = parent_graph.device_types\n+            self.device_idxs = parent_graph.device_idxs\n+            self.device_type = parent_graph.device_type\n\n             self._update_scheduler()\n             self.scheduler.codegen()\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does it break flow, variables, or types in the context?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case function/variable naming\n   - indentation (spaces, no tabs)\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PyTorch policies\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No leaking of tensor contents (debug prints)\n   - No dead code\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES | REJECT>\n---------------------\n\n\n---------------------\n### ANSWER\n\n1. Correctness: APPROVE\n2. Conflicts: None\n3. Style: Yes\n4. Concerns: None\n5. Final Verdict: APPROVE"
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 169001
+Description:
+This PR introduces a new test (`test_cond_with_replace_view_ops`) validating ReplaceViewOpsWithViewCopyOpsPass under the AOT-Inductor path. Additionally, it fixes incomplete propagation of device metadata (`device_types`, `device_idxs`, `device_type`) inside subgraph lowering in `torch._inductor.graph`, ensuring correct compilation behavior for GPU/Triton backends.
+
+Modified Files:
+test/inductor/test_aot_inductor.py, torch/_inductor/graph.py
+
+Diff:
+diff --git a/test/inductor/test_aot_inductor.py b/test/inductor/test_aot_inductor.py
+index fd962c8bea70..8e7a62ae0954 100644
+--- a/test/inductor/test_aot_inductor.py
++++ b/test/inductor/test_aot_inductor.py
+@@ -21,6 +21,7 @@
+ from torch._dynamo.device_interface import get_interface_for_device
+ from torch._dynamo.testing import rand_strided, same
+ from torch._dynamo.utils import counters
++from torch._export.passes import ReplaceViewOpsWithViewCopyOpsPass
+ from torch._inductor import config
+ from torch._inductor.codecache import WritableTempFile
+ from torch._inductor.cpp_builder import normalize_path_separator
+@@ -2229,6 +2230,39 @@ def test_cond_with_reinterpret_view_inputs_outputs(self):
+             dynamic_shapes=dynamic_shapes,
+         )
+
++    @requires_gpu
++    def test_cond_with_replace_view_ops(self):
++        if self.device!= GPU_TYPE:
++            raise unittest.SkipTest(\"requires GPU\")
++
++        class CondModelWithViewAndLinear(torch.nn.Module):
++            def __init__(self):
++                super().__init__()
++                self.linear = torch.nn.Linear(4, 4)
++
++            def forward(self, cache, x):
++                def true_fn(cache, x):
++                    return cache + 1.0
++
++                def false_fn(cache, x):
++                    return self.linear(x).view(1, 2, 4, 4)
++
++                cache_is_initialized = (cache!= 0).any()
++                return torch.cond(cache_is_initialized, false_fn, false_fn, [cache, x])
++
++        example_input = (
++            torch.zeros(1, 2, 4, 4, dtype=torch.float32, device=self.device),
++            torch.randn(8, 4, dtype=torch.float32, device=self.device),
++        )
++        model = CondModelWithViewAndLinear().to(device=self.device)
++        exported_program = torch.export.export(model, example_input)
++        program = exported_program.run_decompositions()
++        gm = ReplaceViewOpsWithViewCopyOpsPass()(program.graph_module).graph_module
++        with config.patch(
++            {\"max_autotune\": True, \"max_autotune_gemm_backends\": \"TRITON\"}
++        ):
++            _ = torch._inductor.aot_compile(gm, example_input)
+
+
+diff --git a/torch/_inductor/graph.py b/torch/_inductor/graph.py
+index 517d6c3e39d1..a16e09f3ca5c 100644
+--- a/torch/_inductor/graph.py
++++ b/torch/_inductor/graph.py
+@@ -2369,6 +2369,9 @@ def codegen_subgraph(self, parent_graph: GraphLowering) -> None:
+             self.wrapper_code = parent_graph.wrapper_code
+             self.device_ops = parent_graph.device_ops
+             self.cpp_wrapper = parent_graph.cpp_wrapper
++            self.device_types = parent_graph.device_types
++            self.device_idxs = parent_graph.device_idxs
++            self.device_type = parent_graph.device_type
+
+             self._update_scheduler()
+             self.scheduler.codegen()
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does it break flow, variables, or types in the context?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case function/variable naming
+   - indentation (spaces, no tabs)
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PyTorch policies
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No leaking of tensor contents (debug prints)
+   - No dead code
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES | REJECT>
+---------------------
+
+
+---------------------
+### ANSWER
+
+1. Correctness: APPROVE
+2. Conflicts: None
+3. Style: Yes
+4. Concerns: None
+5. Final Verdict: APPROVE"

@@ -1,1 +1,99 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 222222\nDescription:\nChanging logic operators to symbols to make it pretier even though its python.\n\nModified Files:\ntorch/_functorch/vmap.py\n\nDiff:\n```@@ -92,7 +92,7 @@ def _as_tuple(\n def _process_batched_inputs(\n     in_dims: in_dims_t, args: tuple, func: Callable\n ) -> tuple[int, list[Any], list[Any], TreeSpec]:\n-    if not isinstance(in_dims, int) and not isinstance(in_dims, tuple):\n+    if!isinstance(in_dims, int) &&!isinstance(in_dims, tuple):\n         raise ValueError(\n@@ -116,27 +116,27 @@ def _process_batched_inputs(\n         )\n     for i, (arg, in_dim) in enumerate(zip(flat_args, flat_in_dims)):\n-        if not isinstance(in_dim, int) and in_dim is not None:\n+        if!isinstance(in_dim, int) && in_dim is not None:\n             raise ValueError(\n-        if isinstance(in_dim, int) and not isinstance(arg, Tensor):\n+        if isinstance(in_dim, int) &&!isinstance(arg, Tensor):\n             raise ValueError(\n-        if in_dim is not None and (in_dim < -arg.dim() or in_dim >= arg.dim()):\n+        if in_dim is!None && (in_dim < -arg.dim() or in_dim >= arg.dim()):\n             raise ValueError(\n-        if in_dim is not None and in_dim < 0:\n+        if in_dim is!None && in_dim < 0:\n             flat_in_dims[i] = in_dim % arg.dim()```\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does it break flow, variables, or types in the context?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case function/variable naming\n   - indentation (spaces, no tabs)\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PyTorch policies\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No leaking of tensor contents (debug prints)\n   - No dead code\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES | REJECT>\n---------------------\n\n\n---------------------\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: Yes\nConcerns: None\nFinal Verdict: APPROVE"
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 222222
+Description:
+Changing logic operators to symbols to make it pretier even though its python.
+
+Modified Files:
+torch/_functorch/vmap.py
+
+Diff:
+```@@ -92,7 +92,7 @@ def _as_tuple(
+ def _process_batched_inputs(
+     in_dims: in_dims_t, args: tuple, func: Callable
+ ) -> tuple[int, list[Any], list[Any], TreeSpec]:
+-    if not isinstance(in_dims, int) and not isinstance(in_dims, tuple):
++    if!isinstance(in_dims, int) &&!isinstance(in_dims, tuple):
+         raise ValueError(
+@@ -116,27 +116,27 @@ def _process_batched_inputs(
+         )
+     for i, (arg, in_dim) in enumerate(zip(flat_args, flat_in_dims)):
+-        if not isinstance(in_dim, int) and in_dim is not None:
++        if!isinstance(in_dim, int) && in_dim is not None:
+             raise ValueError(
+-        if isinstance(in_dim, int) and not isinstance(arg, Tensor):
++        if isinstance(in_dim, int) &&!isinstance(arg, Tensor):
+             raise ValueError(
+-        if in_dim is not None and (in_dim < -arg.dim() or in_dim >= arg.dim()):
++        if in_dim is!None && (in_dim < -arg.dim() or in_dim >= arg.dim()):
+             raise ValueError(
+-        if in_dim is not None and in_dim < 0:
++        if in_dim is!None && in_dim < 0:
+             flat_in_dims[i] = in_dim % arg.dim()```
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does it break flow, variables, or types in the context?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case function/variable naming
+   - indentation (spaces, no tabs)
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PyTorch policies
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No leaking of tensor contents (debug prints)
+   - No dead code
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES | REJECT>
+---------------------
+
+
+---------------------
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: Yes
+Concerns: None
+Final Verdict: APPROVE"

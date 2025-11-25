@@ -1,1 +1,327 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 170119\nDescription:\nGood quality PR generated automatically.\n\nModified Files:\ntorch/auto/generated.py\n\nDiff:\n@@ def clip_grad(params, max_norm):\n     return torch.nn.utils.clip_grad_norm_(params, max_norm)\n\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\ndef _clip_grads_with_norm_(\n    parameters: _tensor_or_tensors,\n    max_norm: float,\n    total_norm: torch.Tensor,\n    foreach: Optional[bool] = None,\n) -> None:\n    r\"\"\"Scale the gradients of an iterable of parameters given a pre-calculated total norm and desired max norm.\n\n\n[CONTEXT BLOCK 2]\ndef clip_grad_norm(\n    parameters: _tensor_or_tensors,\n    max_norm: float,\n    norm_type: float = 2.0,\n    error_if_nonfinite: bool = False,\n    foreach: Optional[bool] = None,\n) -> torch.Tensor:\n    r\"\"\"Clip the gradient norm of an iterable of parameters.\n\n\n[CONTEXT BLOCK 3]\ndef clip_grad_norm_(\n    parameters: _tensor_or_tensors,\n    max_norm: float,\n    norm_type: float = 2.0,\n    error_if_nonfinite: bool = False,\n    foreach: Optional[bool] = None,\n) -> torch.Tensor:\n    r\"\"\"Clip the gradient norm of an iterable of parameters.\n\n\n[CONTEXT BLOCK 4]\nclass TorchDispatchTensor(torch.Tensor):\n    @staticmethod\n    def __new__(cls, elem):\n        t = torch.Tensor._make_subclass(cls, elem, elem.requires_grad)\n        t.elem = elem\n        return t\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does it break flow, variables, or types in the context?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case function/variable naming\n   - indentation (spaces, no tabs)\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PyTorch policies\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No leaking of tensor contents (debug prints)\n   - No dead code\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES | REJECT>\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\nStyle: None\nConcerns: None\nFinal Verdict: APPROVE\n---------------------\n\n\n### ANSWER\nCorrectness: APPROVE\nConflicts: None\n"
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 170119
+Description:
+Good quality PR generated automatically.
+
+Modified Files:
+torch/auto/generated.py
+
+Diff:
+@@ def clip_grad(params, max_norm):
+     return torch.nn.utils.clip_grad_norm_(params, max_norm)
+
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+def _clip_grads_with_norm_(
+    parameters: _tensor_or_tensors,
+    max_norm: float,
+    total_norm: torch.Tensor,
+    foreach: Optional[bool] = None,
+) -> None:
+    r\"\"\"Scale the gradients of an iterable of parameters given a pre-calculated total norm and desired max norm.
+
+
+[CONTEXT BLOCK 2]
+def clip_grad_norm(
+    parameters: _tensor_or_tensors,
+    max_norm: float,
+    norm_type: float = 2.0,
+    error_if_nonfinite: bool = False,
+    foreach: Optional[bool] = None,
+) -> torch.Tensor:
+    r\"\"\"Clip the gradient norm of an iterable of parameters.
+
+
+[CONTEXT BLOCK 3]
+def clip_grad_norm_(
+    parameters: _tensor_or_tensors,
+    max_norm: float,
+    norm_type: float = 2.0,
+    error_if_nonfinite: bool = False,
+    foreach: Optional[bool] = None,
+) -> torch.Tensor:
+    r\"\"\"Clip the gradient norm of an iterable of parameters.
+
+
+[CONTEXT BLOCK 4]
+class TorchDispatchTensor(torch.Tensor):
+    @staticmethod
+    def __new__(cls, elem):
+        t = torch.Tensor._make_subclass(cls, elem, elem.requires_grad)
+        t.elem = elem
+        return t
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does it break flow, variables, or types in the context?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case function/variable naming
+   - indentation (spaces, no tabs)
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PyTorch policies
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No leaking of tensor contents (debug prints)
+   - No dead code
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES | REJECT>
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+Style: None
+Concerns: None
+Final Verdict: APPROVE
+---------------------
+
+
+### ANSWER
+Correctness: APPROVE
+Conflicts: None
+"

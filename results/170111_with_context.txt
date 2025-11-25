@@ -1,1 +1,225 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 170111\nDescription:\nAdds non‑PyTorch style docstring.\n\nModified Files:\ntorch/nn/functional.py\n\nDiff:\n@@ def dropout(input, p=0.5, training=True, inplace=False):\n+    \"\"\"This is a BAD Docstring: Uses CAPS and no args description\"\"\"\n     return _VF.dropout(input, p, training)\n\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\ndef _dropout_returns_masked_input_and_mask(\n    g: jit_utils.GraphContext, input: torch._C.Value, p: float, train: bool\n) -> tuple[torch._C.Value, torch._C.Value | None]:\n    symbolic_helper.check_training_mode(train, \"dropout\")\n    # In eval mode, dropout is non-op. That is, if the node's\n    # train param is set to False, dropout just returns its inputs.\n    if not train:\n        return input, None\n    p = g.op(\"Constant\", value_t=torch.tensor(p))\n    t = g.op(\"Constant\", value_t=torch.tensor(train, dtype=torch.bool))\n    r, mask = g.op(\"Dropout\", input, p, t, outputs=2)\n    return r, mask\n\n\n[CONTEXT BLOCK 2]\ndef native_dropout(input: Tensor, p: float, train: Optional[bool]):\n    if train and p!= 0:\n        if p == 1:\n            return (torch.zeros_like(input), torch.zeros_like(input, dtype=torch.bool))\n        if not input.dtype.is_floating_point:\n            raise RuntimeError(\n                \"result type Float can't be cast to the desired output type Long\"\n            )\n        bool_mask = torch.rand_like(input) > p\n        res = bool_mask * input * float(1.0 / (1.0 - p))\n        return (res, bool_mask)\n    else:\n        return (input, torch.ones_like(input, dtype=torch.bool))\n\n\n[CONTEXT BLOCK 3]\ndef _fused_dropout_decomposition(input, p, generator=None):\n    assert generator is None\n    mask = (torch.rand_like(input) < p).to(dtype=torch.uint8)\n    res = mask.type_as(input) * input * (1.0 / p)\n    return (res, mask)\n\n\n[CONTEXT BLOCK 4]\nclass NNDropoutModule(torch.nn.Module):\n    def forward(self):\n        a = torch.randn(8, 4)\n        b = torch.randn(8, 4, 4, 4)\n        c = torch.randn(8, 4, 4, 4, 4)\n        return len(\n            F.dropout(a),\n            F.dropout2d(b),\n            F.dropout3d(c),\n            F.alpha_dropout(a),\n            F.feature_alpha_dropout(c),\n        )\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does it break flow, variables, or types in the context?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case function/variable naming\n   - indentation (spaces, no tabs)\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PyTorch policies\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No leaking of tensor contents (debug prints)\n   - No dead code\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES | REJECT>\n---------------------\n\n\n---------------------\n### PR ID: 170111\n### DESCRIPTION:\nAdds non‑PyTorch style docstring.\n\n### DIFF:\n@@ def dropout(input, p=0.5, training=True, inplace=False):\n+    \"\"\"This is a BAD Docstring: Uses CAPS and no args description\"\"\"\n     return _VF.dropout(input, p, training)\n\n### CONTEXT BLOCK 1:\ndef _dropout_returns_masked_input_and_mask(\n    g: jit_utils.GraphContext, input: torch._C.Value, p: float, train: bool\n) -> tuple[torch._C.Value, torch._C.Value | None]:\n    symbolic_helper.check_training_mode(train, \"dropout\")\n    # In eval mode, dropout is non-op. That is, if the node's\n    # train param is set to False, dropout just returns its inputs.\n    if not train:\n        return input, None\n    p = g.op(\"Constant\", value_t=torch.tensor(p))\n    t = g.op(\"Constant\", value_t=torch.tensor(train, dtype=torch.bool))\n    r, mask = g.op(\"Dropout\", input, p, t, outputs=2)\n    return r, mask\n\n\n### CONTEXT BLOCK 2:\ndef native_dropout(input: Tensor, p: float, train: Optional[bool]):\n    if train and p!= 0:\n        if p == 1:\n            return (torch.zeros_like(input), torch.zeros_like(input, dtype=torch.bool))\n        if not input.dtype.is_floating_point:\n            raise RuntimeError(\n                \"result type Float can't be cast to the desired output type Long\"\n            )\n        bool_mask = torch.rand_like(input) > p\n        res = bool_mask * input * float(1.0 / (1.0 - p))\n        return (res, bool_mask)\n    else:\n        return (input, torch.ones_like(input, dtype=torch.bool))\n\n\n### CONTEXT BLOCK 3:\ndef _fused_dropout_decomposition(input, p, generator=None):\n    assert generator is None\n    mask = (torch.rand_like(input) < p).to(dtype=torch.uint8)\n    res = mask.type_as(input) * input * (1.0 / p)\n    return (res, mask)\n\n\n### CONTEXT BLOCK 4:\nclass NNDropoutModule(torch.nn.Module):\n    def forward(self):\n        a = torch.randn(8, 4)\n        b = torch.randn(8, 4, 4, 4)\n        c = torch.randn(8, 4, 4, 4, 4)\n        return len(\n            F.dropout(a),\n            F.dropout2d(b),\n            F.dropout3d(c),\n            F.alpha_dropout(a),\n            F.feature_alpha_dropout(c),\n        )\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does it break flow, variables, or types in the context?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case function/variable naming\n   - indentation (spaces, no tabs)\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PyTorch policies\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No leaking of tensor contents (debug prints)\n   - No dead code\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: <Yes"
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 170111
+Description:
+Adds non‑PyTorch style docstring.
+
+Modified Files:
+torch/nn/functional.py
+
+Diff:
+@@ def dropout(input, p=0.5, training=True, inplace=False):
++    \"\"\"This is a BAD Docstring: Uses CAPS and no args description\"\"\"
+     return _VF.dropout(input, p, training)
+
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+def _dropout_returns_masked_input_and_mask(
+    g: jit_utils.GraphContext, input: torch._C.Value, p: float, train: bool
+) -> tuple[torch._C.Value, torch._C.Value | None]:
+    symbolic_helper.check_training_mode(train, \"dropout\")
+    # In eval mode, dropout is non-op. That is, if the node's
+    # train param is set to False, dropout just returns its inputs.
+    if not train:
+        return input, None
+    p = g.op(\"Constant\", value_t=torch.tensor(p))
+    t = g.op(\"Constant\", value_t=torch.tensor(train, dtype=torch.bool))
+    r, mask = g.op(\"Dropout\", input, p, t, outputs=2)
+    return r, mask
+
+
+[CONTEXT BLOCK 2]
+def native_dropout(input: Tensor, p: float, train: Optional[bool]):
+    if train and p!= 0:
+        if p == 1:
+            return (torch.zeros_like(input), torch.zeros_like(input, dtype=torch.bool))
+        if not input.dtype.is_floating_point:
+            raise RuntimeError(
+                \"result type Float can't be cast to the desired output type Long\"
+            )
+        bool_mask = torch.rand_like(input) > p
+        res = bool_mask * input * float(1.0 / (1.0 - p))
+        return (res, bool_mask)
+    else:
+        return (input, torch.ones_like(input, dtype=torch.bool))
+
+
+[CONTEXT BLOCK 3]
+def _fused_dropout_decomposition(input, p, generator=None):
+    assert generator is None
+    mask = (torch.rand_like(input) < p).to(dtype=torch.uint8)
+    res = mask.type_as(input) * input * (1.0 / p)
+    return (res, mask)
+
+
+[CONTEXT BLOCK 4]
+class NNDropoutModule(torch.nn.Module):
+    def forward(self):
+        a = torch.randn(8, 4)
+        b = torch.randn(8, 4, 4, 4)
+        c = torch.randn(8, 4, 4, 4, 4)
+        return len(
+            F.dropout(a),
+            F.dropout2d(b),
+            F.dropout3d(c),
+            F.alpha_dropout(a),
+            F.feature_alpha_dropout(c),
+        )
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does it break flow, variables, or types in the context?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case function/variable naming
+   - indentation (spaces, no tabs)
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PyTorch policies
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No leaking of tensor contents (debug prints)
+   - No dead code
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES | REJECT>
+---------------------
+
+
+---------------------
+### PR ID: 170111
+### DESCRIPTION:
+Adds non‑PyTorch style docstring.
+
+### DIFF:
+@@ def dropout(input, p=0.5, training=True, inplace=False):
++    \"\"\"This is a BAD Docstring: Uses CAPS and no args description\"\"\"
+     return _VF.dropout(input, p, training)
+
+### CONTEXT BLOCK 1:
+def _dropout_returns_masked_input_and_mask(
+    g: jit_utils.GraphContext, input: torch._C.Value, p: float, train: bool
+) -> tuple[torch._C.Value, torch._C.Value | None]:
+    symbolic_helper.check_training_mode(train, \"dropout\")
+    # In eval mode, dropout is non-op. That is, if the node's
+    # train param is set to False, dropout just returns its inputs.
+    if not train:
+        return input, None
+    p = g.op(\"Constant\", value_t=torch.tensor(p))
+    t = g.op(\"Constant\", value_t=torch.tensor(train, dtype=torch.bool))
+    r, mask = g.op(\"Dropout\", input, p, t, outputs=2)
+    return r, mask
+
+
+### CONTEXT BLOCK 2:
+def native_dropout(input: Tensor, p: float, train: Optional[bool]):
+    if train and p!= 0:
+        if p == 1:
+            return (torch.zeros_like(input), torch.zeros_like(input, dtype=torch.bool))
+        if not input.dtype.is_floating_point:
+            raise RuntimeError(
+                \"result type Float can't be cast to the desired output type Long\"
+            )
+        bool_mask = torch.rand_like(input) > p
+        res = bool_mask * input * float(1.0 / (1.0 - p))
+        return (res, bool_mask)
+    else:
+        return (input, torch.ones_like(input, dtype=torch.bool))
+
+
+### CONTEXT BLOCK 3:
+def _fused_dropout_decomposition(input, p, generator=None):
+    assert generator is None
+    mask = (torch.rand_like(input) < p).to(dtype=torch.uint8)
+    res = mask.type_as(input) * input * (1.0 / p)
+    return (res, mask)
+
+
+### CONTEXT BLOCK 4:
+class NNDropoutModule(torch.nn.Module):
+    def forward(self):
+        a = torch.randn(8, 4)
+        b = torch.randn(8, 4, 4, 4)
+        c = torch.randn(8, 4, 4, 4, 4)
+        return len(
+            F.dropout(a),
+            F.dropout2d(b),
+            F.dropout3d(c),
+            F.alpha_dropout(a),
+            F.feature_alpha_dropout(c),
+        )
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does it break flow, variables, or types in the context?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case function/variable naming
+   - indentation (spaces, no tabs)
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PyTorch policies
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No leaking of tensor contents (debug prints)
+   - No dead code
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: <Yes"
