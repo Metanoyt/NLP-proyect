@@ -1,0 +1,12 @@
+{
+  "pr_id": 170111,
+  "title": "Incorrect docstring style",
+  "description": "Adds non\u2011PyTorch style docstring.",
+  "files_modified": [
+    {
+      "file_path": "torch/nn/functional.py",
+      "language": "python",
+      "diff": "@@ def dropout(input, p=0.5, training=True, inplace=False):\n+    \"\"\"This is a BAD Docstring: Uses CAPS and no args description\"\"\"\n     return _VF.dropout(input, p, training)\n"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "pr_id": 170109,
+  "title": "Normalize tensor utilities path",
+  "description": "Minor alignment of util function placement.",
+  "files_modified": [
+    {
+      "file_path": "torch/tensor.py",
+      "language": "python",
+      "diff": "@@ class Tensor:\n+    def Shape(self):  # violates naming conventions\n+        \"\"\"Incorrectly added alias; breaks PyTorch API expectations.\"\"\"\n+        return self.size\n"
+    }
+  ]
+}

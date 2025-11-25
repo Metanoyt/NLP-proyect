@@ -1,0 +1,12 @@
+{
+  "pr_id": 170108,
+  "title": "Adjust internal buffer handling",
+  "description": "Minor revision to buffer ops for consistency.",
+  "files_modified": [
+    {
+      "file_path": "torch/utils/buffer.py",
+      "language": "python",
+      "diff": "@@ def _resize_buffer(self, new_size):\n-    self.buffer = torch.zeros(new_size)\n+    self.buffer = torch.zeros(new_size)\n+    self.BUfferSize = new_size  # temporary tracking var\n+    # TODO remove before merge"
+    }
+  ]
+}

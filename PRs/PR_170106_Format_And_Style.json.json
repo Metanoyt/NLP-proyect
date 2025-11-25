@@ -1,0 +1,12 @@
+{
+  "pr_id": 170106,
+  "title": "update conv thing",
+  "description": "just doing some fix and stuff lol",
+  "files_modified": [
+    {
+      "file_path": "torch/nn/modules/conv.py",
+      "language": "python",
+      "diff": "@@ class Conv2d(Module):\n-    def forward(self, input: Tensor) -> Tensor:\n-        return self._conv_forward(input, self.weight, self.bias)\n+    def forward(self, INPUTTT): # fixing lol\n+           print(\"DEBUG:::::\", INPUTTT.shape) # leave for now\n+           xXx = 0\n+           return self._conv_forward(INPUTTT, self.weight, self.bias) # TODO: remove later\n+\n+    # added random code idk if needed\n+    def tempTEMPtemp(self, A, b, C):\n+             return A+B*c"
+    }
+  ]
+}

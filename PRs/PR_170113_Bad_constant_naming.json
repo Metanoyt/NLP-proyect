@@ -1,0 +1,12 @@
+{
+  "pr_id": 170113,
+  "title": "Bad constant naming",
+  "description": "Introduces uppercase constant inside method.",
+  "files_modified": [
+    {
+      "file_path": "torch/optim/adam.py",
+      "language": "python",
+      "diff": "@@ def step(self, closure=None):\n+        LRvalue = self.param_groups[0]['lr']\n+        return super().step()\n"
+    }
+  ]
+}

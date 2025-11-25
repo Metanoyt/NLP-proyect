@@ -1,0 +1,12 @@
+{
+  "pr_id": 170110,
+  "title": "Improper import placement",
+  "description": "Reorders imports violating style guide.",
+  "files_modified": [
+    {
+      "file_path": "torch/nn/modules/module.py",
+      "language": "python",
+      "diff": "@@ class Module:\n-import torch\n+import torch\n+import numpy as np  # unexpected external import\n"
+    }
+  ]
+}

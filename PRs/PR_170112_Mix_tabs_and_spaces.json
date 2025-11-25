@@ -1,0 +1,12 @@
+{
+  "pr_id": 170112,
+  "title": "Mix tabs and spaces",
+  "description": "Introduces tabs in indentation.",
+  "files_modified": [
+    {
+      "file_path": "torch/utils/data/dataloader.py",
+      "language": "python",
+      "diff": "@@ class DataLoader:\n-        return self._iterator\n+\treturn self._iterator  # tab used\n"
+    }
+  ]
+}

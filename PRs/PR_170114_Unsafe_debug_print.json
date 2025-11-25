@@ -1,0 +1,12 @@
+{
+  "pr_id": 170114,
+  "title": "Unsafe debug print",
+  "description": "Adds print leaking tensor contents.",
+  "files_modified": [
+    {
+      "file_path": "torch/autograd/function.py",
+      "language": "python",
+      "diff": "@@ class Function:\n+    def _debug_tensor(self, t):\n+        print('TENSOR DEBUG:', t)  # forbidden\n"
+    }
+  ]
+}

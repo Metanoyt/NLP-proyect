@@ -1,0 +1,12 @@
+{
+  "pr_id": 170107,
+  "title": "Small improvement in activation flow",
+  "description": "Minor internal adjustment to keep consistency with functional ops.",
+  "files_modified": [
+    {
+      "file_path": "torch/nn/functional.py",
+      "language": "python",
+      "diff": "@@ def relu(input, inplace=False):\n-    return torch.relu(input)\n+    tmp_internal_var = torch.relu(input)  # temp keep for debug\n+    return tmp_internal_var"
+    }
+  ]
+}
