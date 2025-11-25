@@ -1,6 +1,13 @@
 {
-  "pr_id": "PR_333333_addition_pattern_switch",
-  "file_modified": "benchmarks/operator_benchmark/pt/as_strided_test.py",
+  "pr_id": 333333,
+  "title": "Addition pattern switch",
+  "status": "Incomplete, breaks PEP8 standards",
   "description": "Change the pattern in multi line addition because it looks original.",
-  "diff": "```diff --git a/NLP-proyect/sample_projects/pytorch/test/dynamo/cpython/3_13/test_ordered_dict.py b/NLP-proyect/sample_projects/pytorch/test/dynamo/cpython/3_13/test_ordered_dict.py\nindex 56a8662..8a5c6c7 100644\n--- a/NLP-proyect/sample_projects/pytorch/test/dynamo/cpython/3_13/test_ordered_dict.py\n+++ b/NLP-proyect/sample_projects/pytorch/test/dynamo/cpython/3_13/test_ordered_dict.py\n@@ -859,9 +859,9 @@ class CPythonBuiltinDictTests(__TestCase):\n\n\n for method in (\n     'test_init test_update test_abc test_clear test_delitem ' +\n-    'test_setitem test_detect_deletion_during_iteration ' +\n-    'test_popitem test_reinsert test_override_update ' +\n-    'test_highly_nested test_highly_nested_subclass ' +\n+    'test_setitem test_detect_deletion_during_iteration ' \n+    + 'test_popitem test_reinsert test_override_update ' \n+    + 'test_highly_nested test_highly_nested_subclass ' + ```"
+  "files_modified": [
+    {
+      "file_path": "benchmarks/operator_benchmark/pt/as_strided_test.py",
+      "language": "python",
+      "diff": "```diff --git a/test/dynamo/cpython/3_13/test_ordered_dict.py b/test/dynamo/cpython/3_13/test_ordered_dict.py\nindex 56a8662..8a5c6c7 100644\n--- a/test/dynamo/cpython/3_13/test_ordered_dict.py\n+++ b/test/dynamo/cpython/3_13/test_ordered_dict.py\n@@ -859,9 +859,9 @@ class CPythonBuiltinDictTests(__TestCase):\n\n\n for method in (\n     'test_init test_update test_abc test_clear test_delitem ' +\n-    'test_setitem test_detect_deletion_during_iteration ' +\n-    'test_popitem test_reinsert test_override_update ' +\n-    'test_highly_nested test_highly_nested_subclass ' +\n+    'test_setitem test_detect_deletion_during_iteration ' \n+    + 'test_popitem test_reinsert test_override_update ' \n+    + 'test_highly_nested test_highly_nested_subclass ' + ```"
+    }
+  ]
 }
