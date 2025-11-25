@@ -1,0 +1,13 @@
+{
+  "pr_id": 170124,
+  "title": "Auto-generated PR 170124",
+  "status": "Incomplete",
+  "description": "Incomplete quality PR generated automatically.",
+  "files_modified": [
+    {
+      "file_path": "torch/auto/generated.py",
+      "language": "python",
+      "diff": "@@ class Adam:\n+    def extra_step(self, grads):\n+        pass  # not implemented fully\n"
+    }
+  ]
+}

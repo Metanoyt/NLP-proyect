@@ -1,0 +1,13 @@
+{
+  "pr_id": 170117,
+  "title": "Auto-generated PR 170117",
+  "status": "Good",
+  "description": "Good quality PR generated automatically.",
+  "files_modified": [
+    {
+      "file_path": "torch/auto/generated.py",
+      "language": "python",
+      "diff": "@@ def normalize(x):\n-    return x\n+    return x / x.norm()  # safe normalization\n"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "pr_id": 170123,
+  "title": "Auto-generated PR 170123",
+  "status": "Incomplete",
+  "description": "Incomplete quality PR generated automatically.",
+  "files_modified": [
+    {
+      "file_path": "torch/auto/generated.py",
+      "language": "python",
+      "diff": "@@ def new_activation(x):\n+    return torch.relu(x)  # missing doc\n"
+    }
+  ]
+}

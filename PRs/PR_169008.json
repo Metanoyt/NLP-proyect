@@ -1,0 +1,18 @@
+{
+  "pr_id": 169008,
+  "title": "Move strict_autograd_cache into fullgraph_capture scope",
+  "status": "Good",
+  "description": "Refactor the placement of strict_autograd_cache to ensure correctness and avoid redundant config patches.",
+  "files_modified": [
+    {
+      "file_path": "torch/_dynamo/aot_compile.py",
+      "language": "python",
+      "diff": "@@ def aot_compile_fullgraph(\n     with (\n         get_metrics_context(),\n         dynamo_timed(\"fullgraph_capture\"),\n+        torch._functorch.config.patch(strict_autograd_cache=True),\n     ):\n         capture_output = convert_frame.fullgraph_capture(model, args, kwargs)\n         graph_capture_output = capture_output.graph_capture_output\n"
+    },
+    {
+      "file_path": "torch/_dynamo/eval_frame.py",
+      "language": "python",
+      "diff": "@@ def aot_compile(example_inputs: tuple[tuple[Any, ...], dict[str, Any]]) -> Any:\n-            with torch._functorch.config.patch(strict_autograd_cache=True):\n-                return aot_compile_fullgraph(\n-                    fn,\n-                    example_inputs,\n-                    hooks=self._hooks,\n-                    backend=innermost_fn(\n-                        self.callback, unaltered_fn_attr=\"_torchdynamo_orig_backend\"\n-                    ),\n-                )\n+            return aot_compile_fullgraph(\n+                fn,\n+                example_inputs,\n+                hooks=self._hooks,\n+                backend=innermost_fn(\n+                    self.callback, unaltered_fn_attr=\"_torchdynamo_orig_backend\"\n+                ),\n+            )\n"
+    }
+  ]
+}

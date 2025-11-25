@@ -1,0 +1,13 @@
+{
+  "pr_id": 170121,
+  "title": "Auto-generated PR 170121",
+  "status": "Mixed",
+  "description": "Mixed quality PR generated automatically.",
+  "files_modified": [
+    {
+      "file_path": "torch/auto/generated.py",
+      "language": "python",
+      "diff": "@@ def forward(self, x):\n+    # good change\n+    y = self.layer(x)\n+    temp2 = y  # unused minor\n+    return y\n"
+    }
+  ]
+}

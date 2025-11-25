@@ -1,0 +1,13 @@
+{
+  "pr_id": 170125,
+  "title": "Auto-generated PR 170125",
+  "status": "Incomplete",
+  "description": "Incomplete quality PR generated automatically.",
+  "files_modified": [
+    {
+      "file_path": "torch/auto/generated.py",
+      "language": "python",
+      "diff": "@@ def run_test():\n+    result = compute()  # missing assertion\n"
+    }
+  ]
+}

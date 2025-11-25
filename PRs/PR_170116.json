@@ -1,0 +1,13 @@
+{
+  "pr_id": 170116,
+  "title": "Auto-generated PR 170116",
+  "status": "Good",
+  "description": "Good quality PR generated automatically.",
+  "files_modified": [
+    {
+      "file_path": "torch/auto/generated.py",
+      "language": "python",
+      "diff": "@@ class Linear:\n     # improved docstring\n+    \"\"\"Applies a linear transformation.\"\"\"\n"
+    }
+  ]
+}

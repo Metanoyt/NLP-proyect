@@ -1,0 +1,13 @@
+{
+  "pr_id": 170120,
+  "title": "Auto-generated PR 170120",
+  "status": "Mixed",
+  "description": "Mixed quality PR generated automatically.",
+  "files_modified": [
+    {
+      "file_path": "torch/auto/generated.py",
+      "language": "python",
+      "diff": "@@ class Module:\n+    def _helper(self):\n+        temp = 1  # minor temp var\n+        return True\n"
+    }
+  ]
+}

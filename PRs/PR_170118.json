@@ -1,0 +1,13 @@
+{
+  "pr_id": 170118,
+  "title": "Auto-generated PR 170118",
+  "status": "Good",
+  "description": "Good quality PR generated automatically.",
+  "files_modified": [
+    {
+      "file_path": "torch/auto/generated.py",
+      "language": "python",
+      "diff": "@@ class Optimizer:\n+    def zero_grad(self):\n+        super().zero_grad()\n"
+    }
+  ]
+}

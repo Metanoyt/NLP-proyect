@@ -1,0 +1,13 @@
+{
+  "pr_id": 170122,
+  "title": "Auto-generated PR 170122",
+  "status": "Mixed",
+  "description": "Mixed quality PR generated automatically.",
+  "files_modified": [
+    {
+      "file_path": "torch/auto/generated.py",
+      "language": "python",
+      "diff": "@@ class Tensor:\n+    @property\n+    def shape_size(self):  # mixed naming\n+        return self.size()\n"
+    }
+  ]
+}

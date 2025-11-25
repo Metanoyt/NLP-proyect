@@ -3,17 +3,29 @@ PR		Status								Comment
 168893  Closed No merged >> Able to merge
 167264  Closed No merged >> Able to merge
 169001	Open Changes Approved
-170101	Generic								Bad Logic
-170102	Generic								API BROKEN-REJECT-MISSING INPUT
-170103	Generic								Bad Test
-170104	Generic								Not necessary
-170105	Generic								Unsafe/Reject/ Validation Removed
-170106	Generic								PR con severos problemas de estilo y formato: uso de nombres de variables no estándar (INPUTTT, xXx), print() de debug en código de producción, indentación incorrecta, comentarios informales, código innecesario y función agregada sin propósito. Además, contiene un error lógico en A+B*c. No cumple estándares de PyTorch ni PEP8.
-170107	Generic								Variable temporal innecesaria (tmp_internal_var) y comentario de debug. Cambio superficial que no aporta funcionalidad y rompe estándares internos de PyTorch.
-170108	Generic								Introduce variable interna con convención incorrecta (BUfferSize) y deja un TODO impropio para un PR final. Cambio superficial sin justificación técnica.
-170109 	Generic								Agrega un método Shape() en PascalCase dentro de Tensor, rompiendo la convención snake_case y alterando la API esperada. Alias innecesario y engañoso.
-170110 	Generic								Agrega import externo (numpy) en un módulo central, rompiendo políticas de dependencias.
-170111 	Generic								Usa docstring en estilo no permitido (mayúsculas, sin formato PyTorch).
-170112 	Generic								Introduce tabuladores en un archivo que usa espacios; rompe consistencia y estándares PEP8.
-170113 	Generic								Agrega constante LRvalue dentro de un método, rompiendo naming conventions (snake_case obligatorio).
-170114 	Generic								Filtra el contenido de tensores vía print, prohibido por razones de seguridad y performance.
+Generic PRS 
+170101	BAD								Bad Logic
+170102	BAD								API BROKEN-REJECT-MISSING INPUT
+170103	BAD								Bad Test
+170104	BAD								Not necessary
+170105	BAD								Unsafe/Reject/ Validation Removed
+170106	BAD								PR con severos problemas de estilo y formato: uso de nombres de variables no estándar (INPUTTT, xXx), print() de debug en código de producción, indentación incorrecta, comentarios informales, código innecesario y función agregada sin propósito. Además, contiene un error lógico en A+B*c. No cumple estándares de PyTorch ni PEP8.
+170107	BAD								Variable temporal innecesaria (tmp_internal_var) y comentario de debug. Cambio superficial que no aporta funcionalidad y rompe estándares internos de PyTorch.
+170108	BAD								Introduce variable interna con convención incorrecta (BUfferSize) y deja un TODO impropio para un PR final. Cambio superficial sin justificación técnica.
+170109 	BAD								Agrega un método Shape() en PascalCase dentro de Tensor, rompiendo la convención snake_case y alterando la API esperada. Alias innecesario y engañoso.
+170110 	BAD								Agrega import externo (numpy) en un módulo central, rompiendo políticas de dependencias.
+170111 	BAD								Usa docstring en estilo no permitido (mayúsculas, sin formato PyTorch).
+170112 	BAD								Introduce tabuladores en un archivo que usa espacios; rompe consistencia y estándares PEP8.
+170113 	BAD								Agrega constante LRvalue dentro de un método, rompiendo naming conventions (snake_case obligatorio).
+170114 	BAD								Filtra el contenido de tensores vía print, prohibido por razones de seguridad y performance.
+170115  Good        						Cambio menor bien estructurado; mantiene formato y convenciones internas.
+170116  Good        						Agrega docstring correcto y consistente con estilo PyTorch.
+170117  Good        						Normalización implementada de forma segura y siguiendo buenas prácticas.
+170118  Good        						Añade método zero_grad limpio usando super() adecuadamente.
+170119  Good        						Implementa clip_grad de forma consistente con torch.nn.utils.
+170120  Mixed       						Incluye función auxiliar válida, pero agrega variable temporal innecesaria.
+170121  Mixed      					 		Lógica correcta, pero contiene variable temporal sin uso claro.
+170122  Mixed       						Propiedad útil, pero nombre shape_size rompe parcialmente la convención snake_case.
+170123  Incomplete  						Función correcta, pero falta documentación del comportamiento.
+170124  Incomplete  						Método extra_step creado pero no implementado completamente.
+170125  Incomplete  						Test incompleto: falta assert que valide el resultado.

@@ -1,0 +1,13 @@
+{
+  "pr_id": 170119,
+  "title": "Auto-generated PR 170119",
+  "status": "Good",
+  "description": "Good quality PR generated automatically.",
+  "files_modified": [
+    {
+      "file_path": "torch/auto/generated.py",
+      "language": "python",
+      "diff": "@@ def clip_grad(params, max_norm):\n     return torch.nn.utils.clip_grad_norm_(params, max_norm)\n"
+    }
+  ]
+}
