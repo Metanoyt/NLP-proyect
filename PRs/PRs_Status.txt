@@ -1,8 +1,12 @@
-PR		Status								Comment
-168396  Closed No merged >> Able to merge
-168893  Closed No merged >> Able to merge
-167264  Closed No merged >> Able to merge
+PR		Status	
+							Comment
+168396  Closed  >> Able to merge
+168893  Closed >> Able to merge
+167264  Closed  >> Able to merge
 169001	Open Changes Approved
+169008  Closed
+168932  Closed Merged
+
 Generic PRS 
 170101	BAD								Bad Logic
 170102	BAD								API BROKEN-REJECT-MISSING INPUT

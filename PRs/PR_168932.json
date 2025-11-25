@@ -1,0 +1,13 @@
+{
+  "pr_id": 168932,
+  "title": "Refactor nonstrict_traceable function handling",
+  "status": "Good",
+  "description": "Large structural refactor: extracts nonstrict_traceable logic into dedicated helper method for clarity, maintainability, and separation of concerns.",
+  "files_modified": [
+    {
+      "file_path": "torch/_dynamo/variables/torch.py",
+      "language": "python",
+      "diff": "@@ def call_function(\n-            import torch._higher_order_ops.flat_apply as flat_apply\n-            ... (large block removed)\n-            return out_vt\n+            return self._call_nonstrict_traceable_function(tx, args, kwargs)\n\n@@ class TorchVariable:\n+    def _call_nonstrict_traceable_function(self, tx, args, kwargs):\n+        import torch._higher_order_ops.flat_apply as flat_apply\n+        from torch._higher_order_ops.flat_apply import func_to_graphable, is_graphable_type\n+        from torch._subclasses.fake_tensor import fake_tensor_tls\n+        from torch.utils._pytree import tree_flatten\n+        from .base import AsPythonConstantNotImplementedError\n+        from .builder import wrap_fx_proxy\n+        # (refactored logic moved from call_function)\n"
+    }
+  ]
+}
