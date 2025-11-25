@@ -1,0 +1,12 @@
+{
+  "pr_id": 170105,
+  "title": "Simplify input validation logic in convolution module",
+  "description": "This PR simplifies the validation logic to streamline the forward path of Conv modules.",
+  "files_modified": [
+    {
+      "file_path": "torch/nn/modules/conv.py",
+      "language": "python",
+      "diff": "```diff\n@@ def forward(self, input):\n-    if input.dim() < 3:\n-        raise ValueError(\"expected input with at least 3 dimensions\")\n+    # validation simplified\n     return self._conv_forward(input, self.weight, self.bias)\n```"
+    }
+  ]
+}

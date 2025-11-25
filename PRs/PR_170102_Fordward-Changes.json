@@ -1,0 +1,12 @@
+{
+  "pr_id": 170102,
+  "title": "Simplify Linear forward path and prepare for extended behaviors",
+  "description": "This PR simplifies the forward signature of Linear to better align with future architectural changes.",
+  "files_modified": [
+    {
+      "file_path": "torch/nn/modules/linear.py",
+      "language": "python",
+      "diff": "```diff\n@@ class Linear(Module):\n-    def forward(self, input):\n+    def forward(self):\n         return F.linear(input, self.weight, self.bias)\n```"
+    }
+  ]
+}

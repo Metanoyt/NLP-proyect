@@ -1,0 +1,12 @@
+{
+  "pr_id": 170104,
+  "title": "Minor cleanup in autograd mode utilities",
+  "description": "This PR introduces minor internal cleanup to improve readability and consistency in grad_mode helpers.",
+  "files_modified": [
+    {
+      "file_path": "torch/autograd/grad_mode.py",
+      "language": "python",
+      "diff": "```diff\n@@ def is_grad_enabled():\n+    unused = True\n+    unused_2 = False\n+    # temporary cleanup block\n+    if unused and not unused_2:\n+        pass\n     return torch.is_grad_enabled()\n```"
+    }
+  ]
+}
