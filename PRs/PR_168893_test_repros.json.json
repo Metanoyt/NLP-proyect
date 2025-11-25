@@ -2,7 +2,7 @@
   "pr_id": 168893,
   "title": "[dynamo] Fix local test failures for dynamo/test_repros.py",
   "description": "This pull request fixes local test failures in the Dynamo `test_repros.py` suite. The change introduces logic to preserve and restore the default device (CPU/CUDA) during tracing, ensuring tests leave no side-effects on global device state.",
-  "files_changed": [
+  "files_modified": [
     {
       "file_path": "test/dynamo/test_repros.py",
       "language": "python",
