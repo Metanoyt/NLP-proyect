@@ -1,8 +1,13 @@
 {
-  "pr_id": "PR_222222_changing_logic_to_symbols",
-  "file_modified": "torch/_functorch/vmap.py",
-  "description": "Changing logic operators to symbols to make it pretier even though its python.",
-  "diff": "```diff --git a/torch/_functorch/vmap.py b/torch/_functorch/vmap.py\nindex 465be67..a811e4a 100644\n--- a/torch/_functorch/vmap.py\n+++ b/torch/_functorch/vmap.py\n@@ -92,7 +92,7 @@ def _as_tuple(\n def _process_batched_inputs(\n     in_dims: in_dims_t, args: tuple, func: Callable\n ) -> tuple[int, list[Any], list[Any], TreeSpec]:\n-    if not isinstance(in_dims, int) and not isinstance(in_dims, tuple):\n+    if !isinstance(in_dims, int) && !isinstance(in_dims, tuple):\n         raise ValueError(\n@@ -116,27 +116,27 @@ def _process_batched_inputs(\n         )\n     for i, (arg, in_dim) in enumerate(zip(flat_args, flat_in_dims)):\n-        if not isinstance(in_dim, int) and in_dim is not None:\n+        if !isinstance(in_dim, int) && in_dim is not None:\n             raise ValueError(\n-        if isinstance(in_dim, int) and not isinstance(arg, Tensor):\n+        if isinstance(in_dim, int) && !isinstance(arg, Tensor):\n             raise ValueError(\n-        if in_dim is not None and (in_dim < -arg.dim() or in_dim >= arg.dim()):\n+        if in_dim is !None && (in_dim < -arg.dim() or in_dim >= arg.dim()):\n             raise ValueError(\n-        if in_dim is not None and in_dim < 0:\n+        if in_dim is !None && in_dim < 0:\n             flat_in_dims[i] = in_dim % arg.dim()```"
+  "pr_id": "222222",
+  "title": "Replace Python logical operators with symbols",
+  "status": "Reject",
+  "description": "Attempts to replace Python logical operators (`and`, `or`, `not`) with symbolic forms (`&&`, `!`), which is invalid Python syntax.",
+  "files_modified": [
+    {
+      "file_path": "torch/_functorch/vmap.py",
+      "language": "python",
+      "diff": "@@ -92,7 +92,7 @@ def _as_tuple(\n def _process_batched_inputs(\n     in_dims: in_dims_t, args: tuple, func: Callable\n ) -> tuple[int, list[Any], list[Any], TreeSpec]:\n-    if not isinstance(in_dims, int) and not isinstance(in_dims, tuple):\n+    if !isinstance(in_dims, int) && !isinstance(in_dims, tuple):\n         raise ValueError(\n@@ -116,27 +116,27 @@ def _process_batched_inputs(\n         )\n     for i, (arg, in_dim) in enumerate(zip(flat_args, flat_in_dims)):\n-        if not isinstance(in_dim, int) and in_dim is not None:\n+        if !isinstance(in_dim, int) && in_dim is not None:\n             raise ValueError(\n-        if isinstance(in_dim, int) and not isinstance(arg, Tensor):\n+        if isinstance(in_dim, int) && !isinstance(arg, Tensor):\n             raise ValueError(\n-        if in_dim is not None and (in_dim < -arg.dim() or in_dim >= arg.dim()):\n+        if in_dim is !None && (in_dim < -arg.dim() or in_dim >= arg.dim()):\n             raise ValueError(\n-        if in_dim is not None and in_dim < 0:\n+        if in_dim is !None && in_dim < 0:\n             flat_in_dims[i] = in_dim % arg.dim()"
+    }
+  ]
 }
-
-
