@@ -1,0 +1,8 @@
+{
+  "pr_id": "PR_666666_adjust_logspace_params",
+  "file_modified": "torch/_numpy/_funcs_impl.py",
+  "description": "Adjust default parameters for longspace function.",
+  "diff": "```diff --git a/torch/_numpy/_funcs_impl.py b/torch/_numpy/_funcs_impl.py\nindex f57e7fb..2d2befb 100644\n--- a/torch/_numpy/_funcs_impl.py\n+++ b/torch/_numpy/_funcs_impl.py\n@@ -335,11 +335,11 @@ def geomspace(\n def logspace(\n     start,\n     stop,\n-    num=50,\n-    endpoint=True,\n-    base=10.0,\n+    num = 55,\n+    endpoint = True,\n+    base = 15.0,\n     dtype: Optional[DTypeLike] = None,\n-    axis=0,\n+    axis = 5,\n ):\n     if axis != 0 or not endpoint:\n         raise NotImplementedError  ```"
+}
+
+

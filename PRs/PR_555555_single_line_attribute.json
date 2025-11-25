@@ -1,0 +1,6 @@
+{
+  "pr_id": "PR_555555_single_line_attribute",
+  "file_modified": "benchmarks/operator_benchmark/pt/as_strided_test.py",
+  "description": "Changes attribute definition to a single line to save space.",
+  "diff": "```ddiff --git a/benchmarks/operator_benchmark/pt/as_strided_test.py b/benchmarks/operator_benchmark/pt/as_strided_test.py\nindex 4855cb2..c6f2e45 100644\n--- a/benchmarks/operator_benchmark/pt/as_strided_test.py\n+++ b/benchmarks/operator_benchmark/pt/as_strided_test.py\n@@ -9,11 +9,7 @@ import torch\n # Configs for PT as_strided operator\n as_strided_configs_short = op_bench.config_list(\n     attr_names=['M', 'N', 'size', 'stride', 'storage_offset'],\n-    attrs=[\n-        [8, 8, (2, 2), (1, 1), 0],\n-        [256, 256, (32, 32), (1, 1), 0],\n-        [512, 512, (64, 64), (2, 2), 1],\n-    ],\n+    attrs=[[8, 8, (2, 2), (1, 1), 0],[256, 256, (32, 32), (1, 1), 0],[512, 512, (64, 64), (2, 2), 1],],```"
+}
