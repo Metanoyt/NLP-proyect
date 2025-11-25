@@ -1,5 +1,5 @@
 {
-  "pr_id": "168396",
+  "pr_id": 168396,
   "title": "local_map: fix partitioner tags for forward/backward graphs",
   "status": "Good",
   "description": "Fixes partitioner tags for forward/backward graphs to ensure correct min-cut boundaries.",
