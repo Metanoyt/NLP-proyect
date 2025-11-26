@@ -8,6 +8,11 @@ PR		Status
 168932  Closed Merged
 
 Generic PRS 
+222222	BAD								Syntax errors
+333333	BAD								Pointless + breaks PEP8 standards mixes formats for multi-line addition
+444444	BAD								Insecure leaving secrets in code
+555555	BAD								Breaks PEP8 Standards array structuring
+666666	BAD								Breaks PEP8 Standards default value for parameter definition
 170101	BAD								Bad Logic
 170102	BAD								API BROKEN-REJECT-MISSING INPUT
 170103	BAD								Bad Test
@@ -33,3 +38,4 @@ Generic PRS
 170123  Incomplete  						Función correcta, pero falta documentación del comportamiento.
 170124  Incomplete  						Método extra_step creado pero no implementado completamente.
 170125  Incomplete  						Test incompleto: falta assert que valide el resultado.
+
