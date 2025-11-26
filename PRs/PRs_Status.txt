@@ -30,7 +30,7 @@ Generic PRS
 170115  Good        						Cambio menor bien estructurado; mantiene formato y convenciones internas.
 170116  Good        						Agrega docstring correcto y consistente con estilo PyTorch.
 170117  Good        						Normalización implementada de forma segura y siguiendo buenas prácticas.
-170118  Good        						Añade método zero_grad limpio usando super() adecuadamente.
+170118  Bad        							Añade método zero_grad limpio usando super(), no es particularmente util.
 170119  Good        						Implementa clip_grad de forma consistente con torch.nn.utils.
 170120  Mixed       						Incluye función auxiliar válida, pero agrega variable temporal innecesaria.
 170121  Mixed      					 		Lógica correcta, pero contiene variable temporal sin uso claro.
