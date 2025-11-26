@@ -1,1 +1,278 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 170125\nDescription:\nIncomplete quality PR generated automatically.\n\nModified Files:\ntorch/auto/generated.py\n\nDiff:\n@@ def run_test():\n+    result = compute()  # missing assertion\n\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\ndef run_repro(\n    mod: torch.nn.Module,\n    load_args: Any,\n    *,\n    command: str = \"run\",\n    accuracy: Union[bool, str] = \"\",\n    save_dir: Optional[str] = None,\n    autocast: bool = False,\n    backend: str = \"inductor\",\n    **kwargs: Any,\n) -> None:\n    for k in kwargs:\n        log.warning(\n            \"Unrecognized kwarg %s; perhaps this repro was made on a newer version of PyTorch\",\n            k,\n        )\n\n\n[CONTEXT BLOCK 2]\ndef bernoulli_p(self, p=0.5, *, generator=None):\n    if self.device == torch.device(\"cpu\"):\n        return NotImplemented\n    assert generator is None\n    return torch.rand_like(self, dtype=torch.float32) < p\n\n\n[CONTEXT BLOCK 3]\ndef test(make_args, nnc=nnc_add, aten=torch.add):\n    def setup(n):\n        args = make_args(n)\n        result_aten = aten(*args)\n        result_nnc = nnc(*args)\n        assert result_nnc.dtype == result_aten.dtype\n        assert result_nnc.size() == result_aten.size()\n        assert result_nnc.stride() == result_aten.stride()\n        torch.testing.assert_close(result_aten, result_nnc)\n        return (lambda: nnc(*args), lambda: aten(*args))\n\n\n[CONTEXT BLOCK 4]\ndef generate_repro(\n    test: str,\n    op: torch._ops.OpOverload,\n    args: tuple[Any,...],\n    kwargs: dict[str, Any],\n    *,\n    save_data: bool,\n    dry_run: bool = False,\n) -> str:\n    if save_data:\n        now = datetime.datetime.now()\n        path = os.path.join(tempfile.gettempdir(), \"pytorch_opcheck_safe_to_delete\")\n        unix_timestamp = datetime.datetime.timestamp(now) * 100000\n        filepath = os.path.join(path, f\"repro_{unix_timestamp}.pt\")\n        if not dry_run:\n            os.makedirs(path, exist_ok=True)\n            torch.save((args, kwargs), filepath)\n        args_kwargs = f'args, kwargs = torch.load(\"{filepath}\")'\n    else:\n        args_kwargs = (\n            \"# If you rerun your test with PYTORCH_OPCHECK_PRINT_BETTER_REPRO=1\\n\"\n            \"# we will fill them in same (args, kwargs) as in your test\\n\"\n            \"args = ()  # args to the operator\\n\"\n            \"kwargs = {}  # kwargs to the operator\"\n        )\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does the code changes follow appropiate Python Syntax?\n   - Does it break flow, variables, or types in the context given?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case for functions camel case for variables\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PEP8 standards\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No adding hardcoded sensitive credentials\n   - No pointless code or code changes that add no value\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>\n---------------------\n### ANSWER:\n\n1. Correctness: No\n2. Conflicts: Yes\n3. Style: No\n4. Concerns:\n- No temporary or misleading names\n- No hardcoded sensitive credentials\n- No pointless code or code changes that add no value\n- No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: No\n2. Conflicts: Yes\n3. Style: No\n4. Concerns:\n- No temporary or misleading names\n- No hardcoded sensitive credentials\n- No pointless code or code changes that add no value\n- No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n### ANSWER:\n\n1. Correctness: No\n2. Conflicts: Yes\n3. Style: No\n4. Concerns:\n- No temporary or misleading names\n- No hardcoded sensitive credentials\n- No pointless code or code changes that add no value\n- No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: No\n2. Conflicts: Yes\n3. Style: No\n4. Concerns:\n- No temporary or misleading names\n- No hardcoded sensitive credentials\n- No pointless code or code changes that add no value\n- No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n### ANSWER:\n\n1. Correctness: No\n2. Conflicts: Yes\n3. Style: No\n4. Concerns:\n- No temporary or misleading names\n- No hardcoded sensitive credentials\n- No pointless code or code changes that add no value\n- No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: No\n2. Conflicts: Yes\n3. Style: No\n4. Concerns:\n- No temporary or misleading names\n- No hardcoded sensitive credentials\n- No pointless code or code changes that add no value\n- No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n### ANSWER:\n\n1. Correctness: No\n2. Conflicts: Yes\n3. Style: No\n4. Concerns:\n- No temporary or misleading names\n- No hardcoded sensitive credentials\n- No pointless code or code changes that add no value\n- No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: No\n2. Conflicts: Yes\n3. Style: No\n4. Concerns:\n- No temporary or misleading names\n- No hardcoded sensitive credentials\n- No pointless code or code changes that add no value\n- No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n### ANSWER:\n\n1. Correctness: No\n2. Conflicts: Yes\n3. Style: No\n4. Concerns:\n- No temporary or misleading names\n- No hardcoded sensitive credentials\n- No pointless code or code changes that add no value\n- No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: No\n2. Conflicts: Yes\n3. Style: No\n4. Concerns:\n- No temporary or misleading names\n- No hardcoded sensitive credentials\n- No pointless code or code changes that add no value\n- No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n### ANSWER:\n\n1. Correctness: No\n2. Conflicts: Yes\n3. Style: No\n4. Concerns:\n- No temporary or misleading names\n- No hardcoded sensitive credentials\n- No"
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 170125
+Description:
+Incomplete quality PR generated automatically.
+
+Modified Files:
+torch/auto/generated.py
+
+Diff:
+@@ def run_test():
++    result = compute()  # missing assertion
+
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+def run_repro(
+    mod: torch.nn.Module,
+    load_args: Any,
+    *,
+    command: str = \"run\",
+    accuracy: Union[bool, str] = \"\",
+    save_dir: Optional[str] = None,
+    autocast: bool = False,
+    backend: str = \"inductor\",
+    **kwargs: Any,
+) -> None:
+    for k in kwargs:
+        log.warning(
+            \"Unrecognized kwarg %s; perhaps this repro was made on a newer version of PyTorch\",
+            k,
+        )
+
+
+[CONTEXT BLOCK 2]
+def bernoulli_p(self, p=0.5, *, generator=None):
+    if self.device == torch.device(\"cpu\"):
+        return NotImplemented
+    assert generator is None
+    return torch.rand_like(self, dtype=torch.float32) < p
+
+
+[CONTEXT BLOCK 3]
+def test(make_args, nnc=nnc_add, aten=torch.add):
+    def setup(n):
+        args = make_args(n)
+        result_aten = aten(*args)
+        result_nnc = nnc(*args)
+        assert result_nnc.dtype == result_aten.dtype
+        assert result_nnc.size() == result_aten.size()
+        assert result_nnc.stride() == result_aten.stride()
+        torch.testing.assert_close(result_aten, result_nnc)
+        return (lambda: nnc(*args), lambda: aten(*args))
+
+
+[CONTEXT BLOCK 4]
+def generate_repro(
+    test: str,
+    op: torch._ops.OpOverload,
+    args: tuple[Any,...],
+    kwargs: dict[str, Any],
+    *,
+    save_data: bool,
+    dry_run: bool = False,
+) -> str:
+    if save_data:
+        now = datetime.datetime.now()
+        path = os.path.join(tempfile.gettempdir(), \"pytorch_opcheck_safe_to_delete\")
+        unix_timestamp = datetime.datetime.timestamp(now) * 100000
+        filepath = os.path.join(path, f\"repro_{unix_timestamp}.pt\")
+        if not dry_run:
+            os.makedirs(path, exist_ok=True)
+            torch.save((args, kwargs), filepath)
+        args_kwargs = f'args, kwargs = torch.load(\"{filepath}\")'
+    else:
+        args_kwargs = (
+            \"# If you rerun your test with PYTORCH_OPCHECK_PRINT_BETTER_REPRO=1\
+\"
+            \"# we will fill them in same (args, kwargs) as in your test\
+\"
+            \"args = ()  # args to the operator\
+\"
+            \"kwargs = {}  # kwargs to the operator\"
+        )
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does the code changes follow appropiate Python Syntax?
+   - Does it break flow, variables, or types in the context given?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case for functions camel case for variables
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PEP8 standards
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No adding hardcoded sensitive credentials
+   - No pointless code or code changes that add no value
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>
+---------------------
+### ANSWER:
+
+1. Correctness: No
+2. Conflicts: Yes
+3. Style: No
+4. Concerns:
+- No temporary or misleading names
+- No hardcoded sensitive credentials
+- No pointless code or code changes that add no value
+- No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: No
+2. Conflicts: Yes
+3. Style: No
+4. Concerns:
+- No temporary or misleading names
+- No hardcoded sensitive credentials
+- No pointless code or code changes that add no value
+- No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+### ANSWER:
+
+1. Correctness: No
+2. Conflicts: Yes
+3. Style: No
+4. Concerns:
+- No temporary or misleading names
+- No hardcoded sensitive credentials
+- No pointless code or code changes that add no value
+- No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: No
+2. Conflicts: Yes
+3. Style: No
+4. Concerns:
+- No temporary or misleading names
+- No hardcoded sensitive credentials
+- No pointless code or code changes that add no value
+- No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+### ANSWER:
+
+1. Correctness: No
+2. Conflicts: Yes
+3. Style: No
+4. Concerns:
+- No temporary or misleading names
+- No hardcoded sensitive credentials
+- No pointless code or code changes that add no value
+- No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: No
+2. Conflicts: Yes
+3. Style: No
+4. Concerns:
+- No temporary or misleading names
+- No hardcoded sensitive credentials
+- No pointless code or code changes that add no value
+- No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+### ANSWER:
+
+1. Correctness: No
+2. Conflicts: Yes
+3. Style: No
+4. Concerns:
+- No temporary or misleading names
+- No hardcoded sensitive credentials
+- No pointless code or code changes that add no value
+- No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: No
+2. Conflicts: Yes
+3. Style: No
+4. Concerns:
+- No temporary or misleading names
+- No hardcoded sensitive credentials
+- No pointless code or code changes that add no value
+- No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+### ANSWER:
+
+1. Correctness: No
+2. Conflicts: Yes
+3. Style: No
+4. Concerns:
+- No temporary or misleading names
+- No hardcoded sensitive credentials
+- No pointless code or code changes that add no value
+- No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: No
+2. Conflicts: Yes
+3. Style: No
+4. Concerns:
+- No temporary or misleading names
+- No hardcoded sensitive credentials
+- No pointless code or code changes that add no value
+- No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+### ANSWER:
+
+1. Correctness: No
+2. Conflicts: Yes
+3. Style: No
+4. Concerns:
+- No temporary or misleading names
+- No hardcoded sensitive credentials
+- No"

@@ -1,1 +1,139 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 170117\nDescription:\nGood quality PR generated automatically.\n\nModified Files:\ntorch/auto/generated.py\n\nDiff:\n@@ def normalize(x):\n-    return x\n+    return x / x.norm()  # safe normalization\n\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\nclass NormalizationTestModel(torch.nn.Module):\n    def __init__(self) -> None:\n        super().__init__()\n        self.quant = torch.ao.quantization.QuantStub()\n        self.fc1 = torch.nn.Linear(5, 8).to(dtype=torch.float)\n        self.layer_norm = torch.nn.LayerNorm(8)\n        self.group_norm = torch.nn.GroupNorm(2, 8)\n        self.instance_norm1d = torch.nn.InstanceNorm1d(8)\n        self.instance_norm2d = torch.nn.InstanceNorm2d(8)\n        self.instance_norm3d = torch.nn.InstanceNorm3d(8)\n\n\n[CONTEXT BLOCK 2]\ndef normalize_module(\n    root: torch.nn.Module,\n    target: str,\n    args: tuple[Any],\n    kwargs: Optional[dict[str, Any]] = None,\n    normalize_to_only_use_kwargs: bool = False,\n) -> Optional[ArgsKwargsPair]:\n    \"\"\"\n    Returns normalized arguments to PyTorch modules. This means that\n    `args/kwargs` will be matched up to the functional's\n    signature and return exclusively kwargs in positional order if\n    `normalize_to_only_use_kwargs` is True.\n    Also populates default values. Does not support positional-only\n    parameters or varargs parameters (*args, **kwargs).\n\n\n[CONTEXT BLOCK 3]\ndef normalize_dtype(dtype, parm=None):  # codespell:ignore\n    # cf _decorators.dtype_to_torch\n    torch_dtype = None\n    if dtype is not None:\n        dtype = _dtypes.dtype(dtype)\n        torch_dtype = dtype.torch_dtype\n    return torch_dtype\n\n\n[CONTEXT BLOCK 4]\nclass LayerNorm(nn.Module):\n    def __init__(self, normalized_shape, eps=1e-6, data_format=torch.contiguous_format):\n        super().__init__()\n        self.weight = nn.Parameter(torch.ones(normalized_shape))\n        self.bias = nn.Parameter(torch.zeros(normalized_shape))\n        self.eps = eps\n        self.data_format = data_format\n        if self.data_format!= torch.contiguous_format:\n            raise NotImplementedError\n        self.normalized_shape = (normalized_shape,)\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does the code changes follow appropiate Python Syntax?\n   - Does it break flow, variables, or types in the context given?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case for functions camel case for variables\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PEP8 standards\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No adding hardcoded sensitive credentials\n   - No pointless code or code changes that add no value\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>\n---------------------\n### ANSWER:\n\n1. Correctness: Yes\n2. Conflicts: No\n3. Style: Yes\n4. Concerns: None\n5. Final Verdict: APPROVE\n\n---------------------\n### REVIEWER SIGNATURE\nReviewer: [Your Name]\nDate: [Today's Date]"
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 170117
+Description:
+Good quality PR generated automatically.
+
+Modified Files:
+torch/auto/generated.py
+
+Diff:
+@@ def normalize(x):
+-    return x
++    return x / x.norm()  # safe normalization
+
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+class NormalizationTestModel(torch.nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.quant = torch.ao.quantization.QuantStub()
+        self.fc1 = torch.nn.Linear(5, 8).to(dtype=torch.float)
+        self.layer_norm = torch.nn.LayerNorm(8)
+        self.group_norm = torch.nn.GroupNorm(2, 8)
+        self.instance_norm1d = torch.nn.InstanceNorm1d(8)
+        self.instance_norm2d = torch.nn.InstanceNorm2d(8)
+        self.instance_norm3d = torch.nn.InstanceNorm3d(8)
+
+
+[CONTEXT BLOCK 2]
+def normalize_module(
+    root: torch.nn.Module,
+    target: str,
+    args: tuple[Any],
+    kwargs: Optional[dict[str, Any]] = None,
+    normalize_to_only_use_kwargs: bool = False,
+) -> Optional[ArgsKwargsPair]:
+    \"\"\"
+    Returns normalized arguments to PyTorch modules. This means that
+    `args/kwargs` will be matched up to the functional's
+    signature and return exclusively kwargs in positional order if
+    `normalize_to_only_use_kwargs` is True.
+    Also populates default values. Does not support positional-only
+    parameters or varargs parameters (*args, **kwargs).
+
+
+[CONTEXT BLOCK 3]
+def normalize_dtype(dtype, parm=None):  # codespell:ignore
+    # cf _decorators.dtype_to_torch
+    torch_dtype = None
+    if dtype is not None:
+        dtype = _dtypes.dtype(dtype)
+        torch_dtype = dtype.torch_dtype
+    return torch_dtype
+
+
+[CONTEXT BLOCK 4]
+class LayerNorm(nn.Module):
+    def __init__(self, normalized_shape, eps=1e-6, data_format=torch.contiguous_format):
+        super().__init__()
+        self.weight = nn.Parameter(torch.ones(normalized_shape))
+        self.bias = nn.Parameter(torch.zeros(normalized_shape))
+        self.eps = eps
+        self.data_format = data_format
+        if self.data_format!= torch.contiguous_format:
+            raise NotImplementedError
+        self.normalized_shape = (normalized_shape,)
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does the code changes follow appropiate Python Syntax?
+   - Does it break flow, variables, or types in the context given?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case for functions camel case for variables
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PEP8 standards
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No adding hardcoded sensitive credentials
+   - No pointless code or code changes that add no value
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>
+---------------------
+### ANSWER:
+
+1. Correctness: Yes
+2. Conflicts: No
+3. Style: Yes
+4. Concerns: None
+5. Final Verdict: APPROVE
+
+---------------------
+### REVIEWER SIGNATURE
+Reviewer: [Your Name]
+Date: [Today's Date]"

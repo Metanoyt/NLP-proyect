@@ -1,1 +1,89 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 555555\nDescription:\nChanges attribute definition to a single line to save space.\n\nModified Files:\nbenchmarks/operator_benchmark/pt/as_strided_test.py\n\nDiff:\n```@@ -9,11 +9,7 @@ import torch\n # Configs for PT as_strided operator\n as_strided_configs_short = op_bench.config_list(\n     attr_names=['M', 'N','size','stride','storage_offset'],\n-    attrs=[\n-        [8, 8, (2, 2), (1, 1), 0],\n-        [256, 256, (32, 32), (1, 1), 0],\n-        [512, 512, (64, 64), (2, 2), 1],\n-    ],\n+    attrs=[[8, 8, (2, 2), (1, 1), 0],[256, 256, (32, 32), (1, 1), 0],[512, 512, (64, 64), (2, 2), 1],],```\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does the code changes follow appropiate Python Syntax?\n   - Does it break flow, variables, or types in the context given?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case for functions camel case for variables\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PEP8 standards\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No adding hardcoded sensitive credentials\n   - No pointless code or code changes that add no value\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>\n---------------------\n### ANSWER:\n\n1. Correctness: Yes\n2. Conflicts: No\n3. Style: Yes\n4. Concerns: None\n5. Final Verdict: APPROVE\n\n---------------------\n### REVIEWER'S NOTE\nThe PR is well-written and follows PEP8 conventions. The only concern is that the `as_strided_configs_short` list is not sorted by size, which might lead to incorrect comparisons in the future. I would approve this PR."
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 555555
+Description:
+Changes attribute definition to a single line to save space.
+
+Modified Files:
+benchmarks/operator_benchmark/pt/as_strided_test.py
+
+Diff:
+```@@ -9,11 +9,7 @@ import torch
+ # Configs for PT as_strided operator
+ as_strided_configs_short = op_bench.config_list(
+     attr_names=['M', 'N','size','stride','storage_offset'],
+-    attrs=[
+-        [8, 8, (2, 2), (1, 1), 0],
+-        [256, 256, (32, 32), (1, 1), 0],
+-        [512, 512, (64, 64), (2, 2), 1],
+-    ],
++    attrs=[[8, 8, (2, 2), (1, 1), 0],[256, 256, (32, 32), (1, 1), 0],[512, 512, (64, 64), (2, 2), 1],],```
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does the code changes follow appropiate Python Syntax?
+   - Does it break flow, variables, or types in the context given?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case for functions camel case for variables
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PEP8 standards
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No adding hardcoded sensitive credentials
+   - No pointless code or code changes that add no value
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>
+---------------------
+### ANSWER:
+
+1. Correctness: Yes
+2. Conflicts: No
+3. Style: Yes
+4. Concerns: None
+5. Final Verdict: APPROVE
+
+---------------------
+### REVIEWER'S NOTE
+The PR is well-written and follows PEP8 conventions. The only concern is that the `as_strided_configs_short` list is not sorted by size, which might lead to incorrect comparisons in the future. I would approve this PR."

@@ -1,1 +1,164 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 170104\nDescription:\nThis PR introduces minor internal cleanup to improve readability and consistency in grad_mode helpers.\n\nModified Files:\ntorch/autograd/grad_mode.py\n\nDiff:\n```diff\n@@ def is_grad_enabled():\n+    unused = True\n+    unused_2 = False\n+    # temporary cleanup block\n+    if unused and not unused_2:\n+        pass\n     return torch.is_grad_enabled()\n```\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\ndef safe_has_grad(t):\n    with torch._logging.hide_warnings(torch._logging._internal.safe_grad_filter):\n        return hasattr(t, \"grad\")\n\n\n[CONTEXT BLOCK 2]\ndef call_accumulate_grad(\n    variable: torch.Tensor, grad: torch.Tensor, has_post_hooks: bool\n) -> None:\n    updated_grad = torch._dynamo.compiled_autograd.ops.AccumulateGrad(  # type: ignore[attr-defined]\n        [grad], variable, variable.grad, has_post_hooks\n    )\n    variable.grad = updated_grad[0]\n\n\n[CONTEXT BLOCK 3]\nclass _set_fwd_grad_enabled(_DecoratorContextManager):\n    def __init__(self, mode: bool) -> None:\n        self.prev = _is_fwd_grad_enabled()\n        torch._C._set_fwd_grad_enabled(mode)\n\n\n[CONTEXT BLOCK 4]\ndef _test_backward_mul_by_grad_output(outputs, inputs, masked) -> bool:\n    # Tests that backward is multiplied by grad_output\n    diff_input_list: list[torch.Tensor] = list(_iter_tensors(inputs, True))\n    if not diff_input_list:\n        raise GradcheckError(\"no Tensors requiring grad found in input\")\n    grads_input = torch.autograd.grad(\n        outputs,\n        diff_input_list,\n        [\n            torch.zeros_like(o, memory_format=torch.legacy_contiguous_format)\n            for o in outputs\n        ],\n        allow_unused=True,\n    )\n    for gi, di in zip(grads_input, diff_input_list):\n        if gi is None:\n            continue\n        if isinstance(gi, torch.Tensor) and gi.layout!= torch.strided:\n            if gi.layout!= di.layout:\n                raise GradcheckError(\n                    \"grad is incorrect layout (\"\n                    + str(gi.layout)\n                    + \" is not \"\n                    + str(di.layout)\n                    + \")\"\n                )\n            if _is_sparse_any_tensor(gi):\n                sparse_kind = str(gi.layout).replace(\"torch.\", \"\").replace(\"_coo\", \"\")\n                if gi.sparse_dim()!= di.sparse_dim():\n                    raise GradcheckError(\n                        f\"grad is {sparse_kind} tensor, but has incorrect sparse_dim\"\n                        f\" {gi.sparse_dim()}, expected {di.sparse_dim()}\"\n                    )\n                if gi.dense_dim()!= di.dense_dim():\n                    raise GradcheckError(\n                        f\"grad is {sparse_kind} tensor, but has incorrect dense_dim\"\n                        f\" {gi.dense_dim()}, expected {di.dense_dim()}\"\n                    )\n            gi = gi.to_dense()\n            di = di.to_dense()\n        if masked:\n            if not torch.allclose(gi, torch.zeros_like(gi)):\n                raise GradcheckError(\"backward not multiplied by grad_output\")\n        elif not gi.eq(0).all():\n            raise GradcheckError(\"backward not multiplied by grad_output\")\n        if gi.dtype!= di.dtype:\n            raise GradcheckError(\"grad is incorrect type\")\n        if gi.device!= di.device:\n            raise GradcheckError(\"grad is incorrect device\")\n        if gi.size()!= di.size():\n            raise GradcheckError(\"grad is incorrect size\")\n    return True\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does the code changes follow appropiate Python Syntax?\n   - Does it break flow, variables, or types in the context given?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case for functions camel case for variables\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PEP8 standards\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No adding hardcoded sensitive credentials\n   - No pointless code or code changes that add no value\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>\n---------------------\n### ANSWER:\n\n1. Correctness: APPROVE\n2. Conflicts: None\n3. Style: Yes\n4. Concerns: None\n5. Final Verdict: APPROVE"
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 170104
+Description:
+This PR introduces minor internal cleanup to improve readability and consistency in grad_mode helpers.
+
+Modified Files:
+torch/autograd/grad_mode.py
+
+Diff:
+```diff
+@@ def is_grad_enabled():
++    unused = True
++    unused_2 = False
++    # temporary cleanup block
++    if unused and not unused_2:
++        pass
+     return torch.is_grad_enabled()
+```
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+def safe_has_grad(t):
+    with torch._logging.hide_warnings(torch._logging._internal.safe_grad_filter):
+        return hasattr(t, \"grad\")
+
+
+[CONTEXT BLOCK 2]
+def call_accumulate_grad(
+    variable: torch.Tensor, grad: torch.Tensor, has_post_hooks: bool
+) -> None:
+    updated_grad = torch._dynamo.compiled_autograd.ops.AccumulateGrad(  # type: ignore[attr-defined]
+        [grad], variable, variable.grad, has_post_hooks
+    )
+    variable.grad = updated_grad[0]
+
+
+[CONTEXT BLOCK 3]
+class _set_fwd_grad_enabled(_DecoratorContextManager):
+    def __init__(self, mode: bool) -> None:
+        self.prev = _is_fwd_grad_enabled()
+        torch._C._set_fwd_grad_enabled(mode)
+
+
+[CONTEXT BLOCK 4]
+def _test_backward_mul_by_grad_output(outputs, inputs, masked) -> bool:
+    # Tests that backward is multiplied by grad_output
+    diff_input_list: list[torch.Tensor] = list(_iter_tensors(inputs, True))
+    if not diff_input_list:
+        raise GradcheckError(\"no Tensors requiring grad found in input\")
+    grads_input = torch.autograd.grad(
+        outputs,
+        diff_input_list,
+        [
+            torch.zeros_like(o, memory_format=torch.legacy_contiguous_format)
+            for o in outputs
+        ],
+        allow_unused=True,
+    )
+    for gi, di in zip(grads_input, diff_input_list):
+        if gi is None:
+            continue
+        if isinstance(gi, torch.Tensor) and gi.layout!= torch.strided:
+            if gi.layout!= di.layout:
+                raise GradcheckError(
+                    \"grad is incorrect layout (\"
+                    + str(gi.layout)
+                    + \" is not \"
+                    + str(di.layout)
+                    + \")\"
+                )
+            if _is_sparse_any_tensor(gi):
+                sparse_kind = str(gi.layout).replace(\"torch.\", \"\").replace(\"_coo\", \"\")
+                if gi.sparse_dim()!= di.sparse_dim():
+                    raise GradcheckError(
+                        f\"grad is {sparse_kind} tensor, but has incorrect sparse_dim\"
+                        f\" {gi.sparse_dim()}, expected {di.sparse_dim()}\"
+                    )
+                if gi.dense_dim()!= di.dense_dim():
+                    raise GradcheckError(
+                        f\"grad is {sparse_kind} tensor, but has incorrect dense_dim\"
+                        f\" {gi.dense_dim()}, expected {di.dense_dim()}\"
+                    )
+            gi = gi.to_dense()
+            di = di.to_dense()
+        if masked:
+            if not torch.allclose(gi, torch.zeros_like(gi)):
+                raise GradcheckError(\"backward not multiplied by grad_output\")
+        elif not gi.eq(0).all():
+            raise GradcheckError(\"backward not multiplied by grad_output\")
+        if gi.dtype!= di.dtype:
+            raise GradcheckError(\"grad is incorrect type\")
+        if gi.device!= di.device:
+            raise GradcheckError(\"grad is incorrect device\")
+        if gi.size()!= di.size():
+            raise GradcheckError(\"grad is incorrect size\")
+    return True
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does the code changes follow appropiate Python Syntax?
+   - Does it break flow, variables, or types in the context given?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case for functions camel case for variables
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PEP8 standards
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No adding hardcoded sensitive credentials
+   - No pointless code or code changes that add no value
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>
+---------------------
+### ANSWER:
+
+1. Correctness: APPROVE
+2. Conflicts: None
+3. Style: Yes
+4. Concerns: None
+5. Final Verdict: APPROVE"

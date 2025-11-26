@@ -1,1 +1,123 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 170124\nDescription:\nIncomplete quality PR generated automatically.\n\nModified Files:\ntorch/auto/generated.py\n\nDiff:\n@@ class Adam:\n+    def extra_step(self, grads):\n+        pass  # not implemented fully\n\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\ndef run_repro(\n    mod: torch.nn.Module,\n    load_args: Any,\n    *,\n    command: str = \"run\",\n    accuracy: Union[bool, str] = \"\",\n    save_dir: Optional[str] = None,\n    autocast: bool = False,\n    backend: str = \"inductor\",\n    **kwargs: Any,\n) -> None:\n    for k in kwargs:\n        log.warning(\n            \"Unrecognized kwarg %s; perhaps this repro was made on a newer version of PyTorch\",\n            k,\n        )\n\n\n[CONTEXT BLOCK 2]\nclass Task(nn.Module):\n    def __init__(self) -> None:\n        super().__init__()\n        torch.manual_seed(0)\n        self.p = nn.Parameter(torch.randn(40, 20))\n\n\n[CONTEXT BLOCK 3]\ndef set_deterministic() -> None:\n    \"\"\"Make torch manual seed deterministic.\"\"\"\n\n\n[CONTEXT BLOCK 4]\ndef meta_bernoulli_p(self, p=0.5, generator=None):\n    # https://github.com/pytorch/pytorch/issues/88612\n    return torch.empty_like(self, memory_format=torch.contiguous_format)\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does the code changes follow appropiate Python Syntax?\n   - Does it break flow, variables, or types in the context given?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case for functions camel case for variables\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PEP8 standards\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No adding hardcoded sensitive credentials\n   - No pointless code or code changes that add no value\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>\n---------------------\n### ANSWER:\n\n1. Correctness: No\n2. Conflicts: Yes\n3. Style: No\n4. Concerns:\n  - The new code does not follow PEP8 conventions, as it uses snake_case for functions and camel case for variables.\n  - It also introduces a new function `extra_step` that is not fully implemented, which breaks the flow of the code.\n  - Additionally, it changes the API signature of the `run_repro` function, which is not justified.\n  - There are no issues with unused variables, hardcoded sensitive credentials, or pointless code changes.\n  - The code does not follow any PEP8 conventions, which is a concern."
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 170124
+Description:
+Incomplete quality PR generated automatically.
+
+Modified Files:
+torch/auto/generated.py
+
+Diff:
+@@ class Adam:
++    def extra_step(self, grads):
++        pass  # not implemented fully
+
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+def run_repro(
+    mod: torch.nn.Module,
+    load_args: Any,
+    *,
+    command: str = \"run\",
+    accuracy: Union[bool, str] = \"\",
+    save_dir: Optional[str] = None,
+    autocast: bool = False,
+    backend: str = \"inductor\",
+    **kwargs: Any,
+) -> None:
+    for k in kwargs:
+        log.warning(
+            \"Unrecognized kwarg %s; perhaps this repro was made on a newer version of PyTorch\",
+            k,
+        )
+
+
+[CONTEXT BLOCK 2]
+class Task(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        torch.manual_seed(0)
+        self.p = nn.Parameter(torch.randn(40, 20))
+
+
+[CONTEXT BLOCK 3]
+def set_deterministic() -> None:
+    \"\"\"Make torch manual seed deterministic.\"\"\"
+
+
+[CONTEXT BLOCK 4]
+def meta_bernoulli_p(self, p=0.5, generator=None):
+    # https://github.com/pytorch/pytorch/issues/88612
+    return torch.empty_like(self, memory_format=torch.contiguous_format)
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does the code changes follow appropiate Python Syntax?
+   - Does it break flow, variables, or types in the context given?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case for functions camel case for variables
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PEP8 standards
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No adding hardcoded sensitive credentials
+   - No pointless code or code changes that add no value
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>
+---------------------
+### ANSWER:
+
+1. Correctness: No
+2. Conflicts: Yes
+3. Style: No
+4. Concerns:
+  - The new code does not follow PEP8 conventions, as it uses snake_case for functions and camel case for variables.
+  - It also introduces a new function `extra_step` that is not fully implemented, which breaks the flow of the code.
+  - Additionally, it changes the API signature of the `run_repro` function, which is not justified.
+  - There are no issues with unused variables, hardcoded sensitive credentials, or pointless code changes.
+  - The code does not follow any PEP8 conventions, which is a concern."

@@ -1,1 +1,152 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 333333\nDescription:\nChange the pattern in multi line addition because it looks original.\n\nModified Files:\nbenchmarks/operator_benchmark/pt/as_strided_test.py\n\nDiff:\n```@@ -859,9 +859,9 @@ class CPythonBuiltinDictTests(__TestCase):\n\n\n for method in (\n     'test_init test_update test_abc test_clear test_delitem'+\n-    'test_setitem test_detect_deletion_during_iteration'+\n-    'test_popitem test_reinsert test_override_update'+\n-    'test_highly_nested test_highly_nested_subclass'+\n+    'test_setitem test_detect_deletion_during_iteration'\n+    + 'test_popitem test_reinsert test_override_update'\n+    + 'test_highly_nested test_highly_nested_subclass'+ ```\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\ndef update(filename, test_dir, py38_dir, py311_dir, also_remove_skips):\n    def read_test_results(directory):\n        xmls = open_test_results(directory)\n        testcases = get_testcases(xmls)\n        unexpected_successes = {\n            key(test): test for test in testcases if is_unexpected_success(test)\n        }\n        failures = {key(test): test for test in testcases if is_failure(test)}\n        passing_skipped_tests = {\n            key(test): test for test in testcases if is_passing_skipped_test(test)\n        }\n        return unexpected_successes, failures, passing_skipped_tests\n\n\n[CONTEXT BLOCK 2]\ndef create_pytorch_op_test_case(op_bench, test_config):\n    \"\"\"This method is used to generate est. func_name is a global unique\n    string. For PyTorch add operator with M=8, N=2, K=1, tag = long, here\n    are the values for the members in test_case:\n    op.module_name: add\n    framework: PyTorch\n    test_config: TestConfig(test_name='add_M8_N2_K1', input_config='M: 8, N: 2, K: 1',\n        tag='long', run_backward=False)\n    func_name: addPyTorchTestConfig(test_name='add_M8_N2_K1', input_config='M: 8, N: 2, K: 1',\n                                    tag='long', run_backward=False)\n    \"\"\"\n    test_case = PyTorchOperatorTestCase(op_bench, test_config)\n    test_config = test_case.test_config\n    op = test_case.op_bench\n    func_name = f\"{op.module_name()}{test_case.framework}{str(test_config)}\"\n    return (func_name, test_case)\n\n\n[CONTEXT BLOCK 3]\ndef _create_test(\n    bench_op_obj, orig_test_attrs, tags, OperatorTestCase, run_backward, bwd_input\n):\n    \"\"\"Create tests with the benchmark backend.\n    Args:\n        bench_op_obj: an object which instantiated from a subclass of\n            TorchBenchmarkBase which includes tensor\n            creation and operator execution.\n        orig_test_attrs: a dictionary includes test configs.\n        tags: a attribute in test config to filter inputs\n        OperatorTestCase: a named tuple to save the metadata of an test\n        run_backward: a bool parameter indicating backward path\n    \"\"\"\n    test_attrs = copy.deepcopy(orig_test_attrs)\n    test_attrs = {k: str(v) for k, v in test_attrs.items()}\n    ascii_test_attrs = ast.literal_eval(json.dumps(test_attrs))\n    input_config = str(ascii_test_attrs)[1:-1].replace(\"'\", \"\")\n    if bwd_input:\n        # When auto_set is used, the test name needs to include input.\n        test_attrs.update({\"bwd\": bwd_input})\n    test_name = bench_op_obj.test_name(**test_attrs)\n    test_config = TestConfig(test_name, input_config, tags, run_backward)\n    return OperatorTestCase(bench_op_obj, test_config)\n\n\n[CONTEXT BLOCK 4]\nclass CPythonOrderedDictWithSlotsCopyingTests(__TestCase):\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does the code changes follow appropiate Python Syntax?\n   - Does it break flow, variables, or types in the context given?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case for functions camel case for variables\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PEP8 standards\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No adding hardcoded sensitive credentials\n   - No pointless code or code changes that add no value\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>\n---------------------\n### ANSWER:\n\n1. Correctness: APPROVE\n2. Conflicts: None\n3. Style: Yes\n4. Concerns: None\n5. Final Verdict: APPROVE"
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 333333
+Description:
+Change the pattern in multi line addition because it looks original.
+
+Modified Files:
+benchmarks/operator_benchmark/pt/as_strided_test.py
+
+Diff:
+```@@ -859,9 +859,9 @@ class CPythonBuiltinDictTests(__TestCase):
+
+
+ for method in (
+     'test_init test_update test_abc test_clear test_delitem'+
+-    'test_setitem test_detect_deletion_during_iteration'+
+-    'test_popitem test_reinsert test_override_update'+
+-    'test_highly_nested test_highly_nested_subclass'+
++    'test_setitem test_detect_deletion_during_iteration'
++    + 'test_popitem test_reinsert test_override_update'
++    + 'test_highly_nested test_highly_nested_subclass'+ ```
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+def update(filename, test_dir, py38_dir, py311_dir, also_remove_skips):
+    def read_test_results(directory):
+        xmls = open_test_results(directory)
+        testcases = get_testcases(xmls)
+        unexpected_successes = {
+            key(test): test for test in testcases if is_unexpected_success(test)
+        }
+        failures = {key(test): test for test in testcases if is_failure(test)}
+        passing_skipped_tests = {
+            key(test): test for test in testcases if is_passing_skipped_test(test)
+        }
+        return unexpected_successes, failures, passing_skipped_tests
+
+
+[CONTEXT BLOCK 2]
+def create_pytorch_op_test_case(op_bench, test_config):
+    \"\"\"This method is used to generate est. func_name is a global unique
+    string. For PyTorch add operator with M=8, N=2, K=1, tag = long, here
+    are the values for the members in test_case:
+    op.module_name: add
+    framework: PyTorch
+    test_config: TestConfig(test_name='add_M8_N2_K1', input_config='M: 8, N: 2, K: 1',
+        tag='long', run_backward=False)
+    func_name: addPyTorchTestConfig(test_name='add_M8_N2_K1', input_config='M: 8, N: 2, K: 1',
+                                    tag='long', run_backward=False)
+    \"\"\"
+    test_case = PyTorchOperatorTestCase(op_bench, test_config)
+    test_config = test_case.test_config
+    op = test_case.op_bench
+    func_name = f\"{op.module_name()}{test_case.framework}{str(test_config)}\"
+    return (func_name, test_case)
+
+
+[CONTEXT BLOCK 3]
+def _create_test(
+    bench_op_obj, orig_test_attrs, tags, OperatorTestCase, run_backward, bwd_input
+):
+    \"\"\"Create tests with the benchmark backend.
+    Args:
+        bench_op_obj: an object which instantiated from a subclass of
+            TorchBenchmarkBase which includes tensor
+            creation and operator execution.
+        orig_test_attrs: a dictionary includes test configs.
+        tags: a attribute in test config to filter inputs
+        OperatorTestCase: a named tuple to save the metadata of an test
+        run_backward: a bool parameter indicating backward path
+    \"\"\"
+    test_attrs = copy.deepcopy(orig_test_attrs)
+    test_attrs = {k: str(v) for k, v in test_attrs.items()}
+    ascii_test_attrs = ast.literal_eval(json.dumps(test_attrs))
+    input_config = str(ascii_test_attrs)[1:-1].replace(\"'\", \"\")
+    if bwd_input:
+        # When auto_set is used, the test name needs to include input.
+        test_attrs.update({\"bwd\": bwd_input})
+    test_name = bench_op_obj.test_name(**test_attrs)
+    test_config = TestConfig(test_name, input_config, tags, run_backward)
+    return OperatorTestCase(bench_op_obj, test_config)
+
+
+[CONTEXT BLOCK 4]
+class CPythonOrderedDictWithSlotsCopyingTests(__TestCase):
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does the code changes follow appropiate Python Syntax?
+   - Does it break flow, variables, or types in the context given?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case for functions camel case for variables
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PEP8 standards
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No adding hardcoded sensitive credentials
+   - No pointless code or code changes that add no value
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>
+---------------------
+### ANSWER:
+
+1. Correctness: APPROVE
+2. Conflicts: None
+3. Style: Yes
+4. Concerns: None
+5. Final Verdict: APPROVE"

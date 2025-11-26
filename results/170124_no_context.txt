@@ -1,1 +1,90 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 170124\nDescription:\nIncomplete quality PR generated automatically.\n\nModified Files:\ntorch/auto/generated.py\n\nDiff:\n@@ class Adam:\n+    def extra_step(self, grads):\n+        pass  # not implemented fully\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does the code changes follow appropiate Python Syntax?\n   - Does it break flow, variables, or types in the context given?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case for functions camel case for variables\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PEP8 standards\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No adding hardcoded sensitive credentials\n   - No pointless code or code changes that add no value\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>\n---------------------\n### ANSWER:\n\n1. Correctness: No\n2. Conflicts: Yes\n3. Style: No\n4. Concerns:\n  - The change modifies the `extra_step` method without implementing it fully.\n  - The change removes the `self` parameter from the `extra_step` method.\n  - The change does not follow PEP8 conventions (missing snake_case for variables).\n  - The change does not have any docstrings.\n  - The change does not import from PEP8 standards.\n  - The change does not have any API changes.\n  - The change does not have any TODOs left behind.\n  - The change does not have any debug prints.\n  - The change does not have any unnecessary variables.\n  - The change does not have any hardcoded sensitive credentials.\n  - The change does not have any pointless code or code changes that add no value.\n  - The change does not have any intermediate hacks or comments like “fix later” or “temp”."
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 170124
+Description:
+Incomplete quality PR generated automatically.
+
+Modified Files:
+torch/auto/generated.py
+
+Diff:
+@@ class Adam:
++    def extra_step(self, grads):
++        pass  # not implemented fully
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does the code changes follow appropiate Python Syntax?
+   - Does it break flow, variables, or types in the context given?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case for functions camel case for variables
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PEP8 standards
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No adding hardcoded sensitive credentials
+   - No pointless code or code changes that add no value
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>
+---------------------
+### ANSWER:
+
+1. Correctness: No
+2. Conflicts: Yes
+3. Style: No
+4. Concerns:
+  - The change modifies the `extra_step` method without implementing it fully.
+  - The change removes the `self` parameter from the `extra_step` method.
+  - The change does not follow PEP8 conventions (missing snake_case for variables).
+  - The change does not have any docstrings.
+  - The change does not import from PEP8 standards.
+  - The change does not have any API changes.
+  - The change does not have any TODOs left behind.
+  - The change does not have any debug prints.
+  - The change does not have any unnecessary variables.
+  - The change does not have any hardcoded sensitive credentials.
+  - The change does not have any pointless code or code changes that add no value.
+  - The change does not have any intermediate hacks or comments like “fix later” or “temp”."

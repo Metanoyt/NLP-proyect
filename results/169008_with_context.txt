@@ -1,1 +1,165 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 169008\nDescription:\nRefactor the placement of strict_autograd_cache to ensure correctness and avoid redundant config patches.\n\nModified Files:\ntorch/_dynamo/aot_compile.py, torch/_dynamo/eval_frame.py\n\nDiff:\n@@ def aot_compile_fullgraph(\n     with (\n         get_metrics_context(),\n         dynamo_timed(\"fullgraph_capture\"),\n+        torch._functorch.config.patch(strict_autograd_cache=True),\n     ):\n         capture_output = convert_frame.fullgraph_capture(model, args, kwargs)\n         graph_capture_output = capture_output.graph_capture_output\n\n\n@@ def aot_compile(example_inputs: tuple[tuple[Any,...], dict[str, Any]]) -> Any:\n-            with torch._functorch.config.patch(strict_autograd_cache=True):\n-                return aot_compile_fullgraph(\n-                    fn,\n-                    example_inputs,\n-                    hooks=self._hooks,\n-                    backend=innermost_fn(\n-                        self.callback, unaltered_fn_attr=\"_torchdynamo_orig_backend\"\n-                    ),\n-                )\n+            return aot_compile_fullgraph(\n+                fn,\n+                example_inputs,\n+                hooks=self._hooks,\n+                backend=innermost_fn(\n+                    self.callback, unaltered_fn_attr=\"_torchdynamo_orig_backend\"\n+                ),\n+            )\n\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\ndef optimize(*args: Any, **kwargs: Any) -> Union[OptimizeContext, _NullDecorator]:\n    def rebuild_ctx() -> Union[OptimizeContext, _NullDecorator]:\n        ca_kwargs_override = config.compiled_autograd_kwargs_override\n        if ca_kwargs_override:\n            # NOTE: The process of translating other `torch.compile` kwargs to `torch._dynamo.optimize` kwargs\n            # is more complicated, we will add it in the future when needed.\n            assert set(ca_kwargs_override.keys()) == {\"fullgraph\"}, (\n                f\"Only `fullgraph` kwarg override is supported for now, but got {ca_kwargs_override.keys()}\"\n            )\n            kwargs[\"nopython\"] = ca_kwargs_override[\"fullgraph\"]\n        return optimize(*args, **kwargs)\n\n\n[CONTEXT BLOCK 2]\ndef aot_compile_fullgraph(\n    model: Any,\n    example_inputs: tuple[tuple[Any,...], dict[str, Any]],\n    hooks: Hooks,\n    backend: Callable[[torch.fx.GraphModule, list[torch.Tensor]], SerializableCallable],\n) -> AOTCompiledFunction:\n    from torch._dynamo.guards import CheckFunctionManager\n    from torch._dynamo.package import SourceInfo\n    from torch._dynamo.utils import dynamo_timed, get_metrics_context\n    from torch._guards import TracingContext\n\n\n[CONTEXT BLOCK 3]\ndef create_hop_fw_bw(\n    fw_gm: GraphModule,\n    *_args: Any,\n) -> tuple[GraphModule, GraphModule, int, int, set[int]]:\n    \"\"\"\n    Traces a joint, applies passes and partitions it\n    \"\"\"\n    # Keeping these imports here\n    # Avoid circular dependencies once we upstream with dynamo frontend\n    from torch._dispatch.python import suspend_functionalization\n    from torch._functorch.aot_autograd import AOTConfig, create_joint\n    from torch._guards import detect_fake_mode\n    from torch._subclasses.fake_tensor import FakeTensor, FakeTensorMode\n    from torch._subclasses.functional_tensor import disable_functional_mode\n    from torch.fx.experimental.proxy_tensor import disable_proxy_modes_tracing, make_fx\n\n\n[CONTEXT BLOCK 4]\ndef maybe_inline_graph_saved_tensors_hooks(\n    fw_module,  # torch.fx.GraphModule\n    bw_module,  # torch.fx.GraphModule\n    num_inner_fwd_outputs,\n    inner_meta,\n    aot_config,\n    static_input_indices,\n):\n    if torch._dynamo.compiled_autograd.in_compiled_autograd_region:\n        return\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does the code changes follow appropiate Python Syntax?\n   - Does it break flow, variables, or types in the context given?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case for functions camel case for variables\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PEP8 standards\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No adding hardcoded sensitive credentials\n   - No pointless code or code changes that add no value\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>\n---------------------\n### ANSWER:\n\n1. Correctness: APPROVE\n2. Conflicts: None\n3. Style: Yes\n4. Concerns:\n- None\n5. Final Verdict: APPROVE"
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 169008
+Description:
+Refactor the placement of strict_autograd_cache to ensure correctness and avoid redundant config patches.
+
+Modified Files:
+torch/_dynamo/aot_compile.py, torch/_dynamo/eval_frame.py
+
+Diff:
+@@ def aot_compile_fullgraph(
+     with (
+         get_metrics_context(),
+         dynamo_timed(\"fullgraph_capture\"),
++        torch._functorch.config.patch(strict_autograd_cache=True),
+     ):
+         capture_output = convert_frame.fullgraph_capture(model, args, kwargs)
+         graph_capture_output = capture_output.graph_capture_output
+
+
+@@ def aot_compile(example_inputs: tuple[tuple[Any,...], dict[str, Any]]) -> Any:
+-            with torch._functorch.config.patch(strict_autograd_cache=True):
+-                return aot_compile_fullgraph(
+-                    fn,
+-                    example_inputs,
+-                    hooks=self._hooks,
+-                    backend=innermost_fn(
+-                        self.callback, unaltered_fn_attr=\"_torchdynamo_orig_backend\"
+-                    ),
+-                )
++            return aot_compile_fullgraph(
++                fn,
++                example_inputs,
++                hooks=self._hooks,
++                backend=innermost_fn(
++                    self.callback, unaltered_fn_attr=\"_torchdynamo_orig_backend\"
++                ),
++            )
+
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+def optimize(*args: Any, **kwargs: Any) -> Union[OptimizeContext, _NullDecorator]:
+    def rebuild_ctx() -> Union[OptimizeContext, _NullDecorator]:
+        ca_kwargs_override = config.compiled_autograd_kwargs_override
+        if ca_kwargs_override:
+            # NOTE: The process of translating other `torch.compile` kwargs to `torch._dynamo.optimize` kwargs
+            # is more complicated, we will add it in the future when needed.
+            assert set(ca_kwargs_override.keys()) == {\"fullgraph\"}, (
+                f\"Only `fullgraph` kwarg override is supported for now, but got {ca_kwargs_override.keys()}\"
+            )
+            kwargs[\"nopython\"] = ca_kwargs_override[\"fullgraph\"]
+        return optimize(*args, **kwargs)
+
+
+[CONTEXT BLOCK 2]
+def aot_compile_fullgraph(
+    model: Any,
+    example_inputs: tuple[tuple[Any,...], dict[str, Any]],
+    hooks: Hooks,
+    backend: Callable[[torch.fx.GraphModule, list[torch.Tensor]], SerializableCallable],
+) -> AOTCompiledFunction:
+    from torch._dynamo.guards import CheckFunctionManager
+    from torch._dynamo.package import SourceInfo
+    from torch._dynamo.utils import dynamo_timed, get_metrics_context
+    from torch._guards import TracingContext
+
+
+[CONTEXT BLOCK 3]
+def create_hop_fw_bw(
+    fw_gm: GraphModule,
+    *_args: Any,
+) -> tuple[GraphModule, GraphModule, int, int, set[int]]:
+    \"\"\"
+    Traces a joint, applies passes and partitions it
+    \"\"\"
+    # Keeping these imports here
+    # Avoid circular dependencies once we upstream with dynamo frontend
+    from torch._dispatch.python import suspend_functionalization
+    from torch._functorch.aot_autograd import AOTConfig, create_joint
+    from torch._guards import detect_fake_mode
+    from torch._subclasses.fake_tensor import FakeTensor, FakeTensorMode
+    from torch._subclasses.functional_tensor import disable_functional_mode
+    from torch.fx.experimental.proxy_tensor import disable_proxy_modes_tracing, make_fx
+
+
+[CONTEXT BLOCK 4]
+def maybe_inline_graph_saved_tensors_hooks(
+    fw_module,  # torch.fx.GraphModule
+    bw_module,  # torch.fx.GraphModule
+    num_inner_fwd_outputs,
+    inner_meta,
+    aot_config,
+    static_input_indices,
+):
+    if torch._dynamo.compiled_autograd.in_compiled_autograd_region:
+        return
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does the code changes follow appropiate Python Syntax?
+   - Does it break flow, variables, or types in the context given?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case for functions camel case for variables
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PEP8 standards
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No adding hardcoded sensitive credentials
+   - No pointless code or code changes that add no value
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>
+---------------------
+### ANSWER:
+
+1. Correctness: APPROVE
+2. Conflicts: None
+3. Style: Yes
+4. Concerns:
+- None
+5. Final Verdict: APPROVE"

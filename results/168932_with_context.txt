@@ -1,1 +1,191 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 168932\nDescription:\nLarge structural refactor: extracts nonstrict_traceable logic into dedicated helper method for clarity, maintainability, and separation of concerns.\n\nModified Files:\ntorch/_dynamo/variables/torch.py\n\nDiff:\n@@ def call_function(\n-            import torch._higher_order_ops.flat_apply as flat_apply\n-           ... (large block removed)\n-            return out_vt\n+            return self._call_nonstrict_traceable_function(tx, args, kwargs)\n\n@@ class TorchVariable:\n+    def _call_nonstrict_traceable_function(self, tx, args, kwargs):\n+        import torch._higher_order_ops.flat_apply as flat_apply\n+        from torch._higher_order_ops.flat_apply import func_to_graphable, is_graphable_type\n+        from torch._subclasses.fake_tensor import fake_tensor_tls\n+        from torch.utils._pytree import tree_flatten\n+        from.base import AsPythonConstantNotImplementedError\n+        from.builder import wrap_fx_proxy\n+        # (refactored logic moved from call_function)\n\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\ndef nonstrict_trace(traceable_fn: Callable[_P, _R]) -> Callable[_P, _R]:\n    # Like `allow_in_graph`, but with the following enhancements/differences:\n    #\n    # 1. Supports user-defined class as inputs, as long as the class has been\n    #    registered with pytree.\n    # 2. Reads to global/captured tensors forces the underlying graph to treat\n    #    those tensors as constant, and we _assume_ they will not be updated. This\n    #    is similar to FX tracing.\n    # 3. In the resulting Dynamo graph, the call to a `nonstrict_trace`-ed function\n    #    will be represented as a call to `torch._higher_order_ops.flat_apply`,\n    #    which takes in the `nonstrict_trace`-ed function and pytree-flattened\n    #    inputs.\n    # 4. Only the returned function is traceable, and the original function will\n    #    not be. Moreover, `nonstrict_trace` can be used inside a `torch.compile`\n    #    region.\n    #\n    # NOTE: like `allow_in_graph`, aliasing information is neither preserved\n    # between inputs themselves, nor between inputs and outputs.\n    assert callable(traceable_fn), \"nonstrict_trace expects a callable\"\n\n\n[CONTEXT BLOCK 2]\ndef tracing_state_functions() -> dict[Callable[[], Any], Optional[bool]]:\n    # Defined as a function to avoid circular import like torch.onnx\n    return {\n        torch.jit.is_scripting: False,\n        torch.jit.is_tracing: False,\n        torch._C._get_tracing_state: None,\n        torch.fx._symbolic_trace.is_fx_tracing: False,\n        torch.fx._symbolic_trace.is_fx_symbolic_tracing: False,\n        torch.onnx.is_in_onnx_export: False,\n        torch._dynamo.external_utils.is_compiling: True,\n        torch._utils.is_compiling: True,\n        torch.compiler.is_compiling: True,\n        torch.compiler.is_dynamo_compiling: True,\n        torch.compiler.is_exporting: True,\n        # Look into https://github.com/pytorch/pytorch/pull/164721 why this is\n        # turned to True for Dynamo.\n        torch.nn.modules.activation._is_make_fx_tracing: True,\n    }\n\n\n[CONTEXT BLOCK 3]\ndef create_hop_fw_bw(\n    fw_gm: GraphModule,\n    *_args: Any,\n) -> tuple[GraphModule, GraphModule, int, int, set[int]]:\n    \"\"\"\n    Traces a joint, applies passes and partitions it\n    \"\"\"\n    # Keeping these imports here\n    # Avoid circular dependencies once we upstream with dynamo frontend\n    from torch._dispatch.python import suspend_functionalization\n    from torch._functorch.aot_autograd import AOTConfig, create_joint\n    from torch._guards import detect_fake_mode\n    from torch._subclasses.fake_tensor import FakeTensor, FakeTensorMode\n    from torch._subclasses.functional_tensor import disable_functional_mode\n    from torch.fx.experimental.proxy_tensor import disable_proxy_modes_tracing, make_fx\n\n\n[CONTEXT BLOCK 4]\nclass GraphArg:\n    source: Source\n    # TODO: storing a SymInt here but not a FakeTensor is a pretty strange\n    # thing to do.  Probably should have example (which stores an int) and\n    # fake_example\n    _example: Union[TensorWeakRef, torch.SymInt]\n    # When True, this indicates that this GraphArg is a Python quantity (e.g.,\n    # a float or int) which we pass to the FX graph as a Tensor.  This\n    # controls how we codegen calls into the Dynamo graph: we will call\n    # torch.as_tensor on the quantity before passing it in.\n    #\n    # Note that we typically do not pass dynamic integers as tensors, because\n    # they will most frequently just be used for size computation.  But this\n    # is a policy decision that we can change our mind on; in particular, when\n    # an int comes from a random number generator (e.g., random.randint), we\n    # DO pass it as a tensor.\n    #\n    # It's also worth noting that our current tracing rules for\n    # pass_arg_as_tensor as subtly broken: we just pun the variable as a\n    # 0d scalar Tensor and pray that the semantics are the same.  Which they\n    # often are, but not necessarily.  ezyang(May 2024) plans to fix this\n    # soon.\n    pass_arg_as_tensor: bool\n    fake_tensor: Optional[torch._subclasses.fake_tensor.FakeTensor]\n    # UnspecializedPythonVariable often masquerades as a tensor.\n    # We MUST NOT generate shape guard code\n    # that actually tries to access tensor properties on these values.\n    # is_tensor lets us tell if this graph arg actually is a tensor\n    # or not.\n    is_tensor: bool = True\n    # Sometimes, the Tensor we pass to example is freshly allocated (smh).\n    # Then we cannot only keep a weak reference to it.  This lets you\n    # stash a strong reference too.\n    example_strong_ref: Optional[torch.Tensor] = None\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does the code changes follow appropiate Python Syntax?\n   - Does it break flow, variables, or types in the context given?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case for functions camel case for variables\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PEP8 standards\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No adding hardcoded sensitive credentials\n   - No pointless code or code changes that add no value\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>\n---------------------\n### ANSWER:\n\n1. Correctness: APPROVE\n2. Conflicts: None\n3. Style: Yes\n4. Concerns: None\n5. Final Verdict: APPROVE"
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 168932
+Description:
+Large structural refactor: extracts nonstrict_traceable logic into dedicated helper method for clarity, maintainability, and separation of concerns.
+
+Modified Files:
+torch/_dynamo/variables/torch.py
+
+Diff:
+@@ def call_function(
+-            import torch._higher_order_ops.flat_apply as flat_apply
+-           ... (large block removed)
+-            return out_vt
++            return self._call_nonstrict_traceable_function(tx, args, kwargs)
+
+@@ class TorchVariable:
++    def _call_nonstrict_traceable_function(self, tx, args, kwargs):
++        import torch._higher_order_ops.flat_apply as flat_apply
++        from torch._higher_order_ops.flat_apply import func_to_graphable, is_graphable_type
++        from torch._subclasses.fake_tensor import fake_tensor_tls
++        from torch.utils._pytree import tree_flatten
++        from.base import AsPythonConstantNotImplementedError
++        from.builder import wrap_fx_proxy
++        # (refactored logic moved from call_function)
+
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+def nonstrict_trace(traceable_fn: Callable[_P, _R]) -> Callable[_P, _R]:
+    # Like `allow_in_graph`, but with the following enhancements/differences:
+    #
+    # 1. Supports user-defined class as inputs, as long as the class has been
+    #    registered with pytree.
+    # 2. Reads to global/captured tensors forces the underlying graph to treat
+    #    those tensors as constant, and we _assume_ they will not be updated. This
+    #    is similar to FX tracing.
+    # 3. In the resulting Dynamo graph, the call to a `nonstrict_trace`-ed function
+    #    will be represented as a call to `torch._higher_order_ops.flat_apply`,
+    #    which takes in the `nonstrict_trace`-ed function and pytree-flattened
+    #    inputs.
+    # 4. Only the returned function is traceable, and the original function will
+    #    not be. Moreover, `nonstrict_trace` can be used inside a `torch.compile`
+    #    region.
+    #
+    # NOTE: like `allow_in_graph`, aliasing information is neither preserved
+    # between inputs themselves, nor between inputs and outputs.
+    assert callable(traceable_fn), \"nonstrict_trace expects a callable\"
+
+
+[CONTEXT BLOCK 2]
+def tracing_state_functions() -> dict[Callable[[], Any], Optional[bool]]:
+    # Defined as a function to avoid circular import like torch.onnx
+    return {
+        torch.jit.is_scripting: False,
+        torch.jit.is_tracing: False,
+        torch._C._get_tracing_state: None,
+        torch.fx._symbolic_trace.is_fx_tracing: False,
+        torch.fx._symbolic_trace.is_fx_symbolic_tracing: False,
+        torch.onnx.is_in_onnx_export: False,
+        torch._dynamo.external_utils.is_compiling: True,
+        torch._utils.is_compiling: True,
+        torch.compiler.is_compiling: True,
+        torch.compiler.is_dynamo_compiling: True,
+        torch.compiler.is_exporting: True,
+        # Look into https://github.com/pytorch/pytorch/pull/164721 why this is
+        # turned to True for Dynamo.
+        torch.nn.modules.activation._is_make_fx_tracing: True,
+    }
+
+
+[CONTEXT BLOCK 3]
+def create_hop_fw_bw(
+    fw_gm: GraphModule,
+    *_args: Any,
+) -> tuple[GraphModule, GraphModule, int, int, set[int]]:
+    \"\"\"
+    Traces a joint, applies passes and partitions it
+    \"\"\"
+    # Keeping these imports here
+    # Avoid circular dependencies once we upstream with dynamo frontend
+    from torch._dispatch.python import suspend_functionalization
+    from torch._functorch.aot_autograd import AOTConfig, create_joint
+    from torch._guards import detect_fake_mode
+    from torch._subclasses.fake_tensor import FakeTensor, FakeTensorMode
+    from torch._subclasses.functional_tensor import disable_functional_mode
+    from torch.fx.experimental.proxy_tensor import disable_proxy_modes_tracing, make_fx
+
+
+[CONTEXT BLOCK 4]
+class GraphArg:
+    source: Source
+    # TODO: storing a SymInt here but not a FakeTensor is a pretty strange
+    # thing to do.  Probably should have example (which stores an int) and
+    # fake_example
+    _example: Union[TensorWeakRef, torch.SymInt]
+    # When True, this indicates that this GraphArg is a Python quantity (e.g.,
+    # a float or int) which we pass to the FX graph as a Tensor.  This
+    # controls how we codegen calls into the Dynamo graph: we will call
+    # torch.as_tensor on the quantity before passing it in.
+    #
+    # Note that we typically do not pass dynamic integers as tensors, because
+    # they will most frequently just be used for size computation.  But this
+    # is a policy decision that we can change our mind on; in particular, when
+    # an int comes from a random number generator (e.g., random.randint), we
+    # DO pass it as a tensor.
+    #
+    # It's also worth noting that our current tracing rules for
+    # pass_arg_as_tensor as subtly broken: we just pun the variable as a
+    # 0d scalar Tensor and pray that the semantics are the same.  Which they
+    # often are, but not necessarily.  ezyang(May 2024) plans to fix this
+    # soon.
+    pass_arg_as_tensor: bool
+    fake_tensor: Optional[torch._subclasses.fake_tensor.FakeTensor]
+    # UnspecializedPythonVariable often masquerades as a tensor.
+    # We MUST NOT generate shape guard code
+    # that actually tries to access tensor properties on these values.
+    # is_tensor lets us tell if this graph arg actually is a tensor
+    # or not.
+    is_tensor: bool = True
+    # Sometimes, the Tensor we pass to example is freshly allocated (smh).
+    # Then we cannot only keep a weak reference to it.  This lets you
+    # stash a strong reference too.
+    example_strong_ref: Optional[torch.Tensor] = None
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does the code changes follow appropiate Python Syntax?
+   - Does it break flow, variables, or types in the context given?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case for functions camel case for variables
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PEP8 standards
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No adding hardcoded sensitive credentials
+   - No pointless code or code changes that add no value
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>
+---------------------
+### ANSWER:
+
+1. Correctness: APPROVE
+2. Conflicts: None
+3. Style: Yes
+4. Concerns: None
+5. Final Verdict: APPROVE"

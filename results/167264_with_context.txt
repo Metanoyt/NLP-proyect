@@ -1,1 +1,186 @@
-"\nYou are reviewing a Pull Request in a **PyTorch-like Python codebase**.\n\nYour job is to evaluate ONLY what is strictly present in:\n1) The PR's diff\n2) The retrieved context blocks\nDo NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.\n\n---------------------\n### PR INFORMATION\nPR ID: 167264\nDescription:\nThis pull request extends backend detection logic for Pallas by adding support for TPU backends. Previously, Pallas only enabled functionality when CUDA was available. The PR introduces a new function `has_jax_tpu_backend()` and updates `has_pallas()` to enable Pallas when either CUDA or TPU is available through both PyTorch and JAX. This improves compatibility for TPU environments.\n\nModified Files:\ntorch/utils/_pallas.py\n\nDiff:\ndiff --git a/torch/utils/_pallas.py b/torch/utils/_pallas.py\nindex 25cc635dbb178..2d93e7f32c58e 100644\n--- a/torch/utils/_pallas.py\n+++ b/torch/utils/_pallas.py\n@@ -57,6 +57,21 @@ def has_jax_cuda_backend() -> bool:\n         return False\n \n \n+@functools.cache\n+def has_jax_tpu_backend() -> bool:\n+    \"\"\"Check if JAX has TPU backend support.\"\"\"\n+    if not has_jax_package():\n+        return False\n+    try:\n+        import jax  # type: ignore[import-not-found]\n+\n+        # Check if TPU backend is available\n+        devices = jax.devices(\"tpu\")\n+        return len(devices) > 0\n+    except Exception:\n+        return False\n+\n+\n @functools.cache\n def has_pallas() -> bool:\n     \"\"\"\n@@ -65,18 +80,22 @@ def has_pallas() -> bool:\n     Requirements:\n     - JAX package installed\n     - Pallas (jax.experimental.pallas) available\n-    - CUDA backend available (for GPU support)\n+    - A compatible backend (CUDA or TPU) is available in both PyTorch and JAX.\n     \"\"\"\n     if not has_pallas_package():\n         return False\n \n-    # Only enable Pallas if CUDA is available\n-    # (Pallas primarily targets GPU workloads)\n-    if not torch.cuda.is_available():\n-        return False\n+    # Check for is CUDA is available or if JAX has GPU/CUDA backend\n+    has_cuda = torch.cuda.is_available() and has_jax_cuda_backend()\n \n-    # Check if JAX has GPU/CUDA backend\n-    if not has_jax_cuda_backend():\n-        return False\n+    # Check for TPU backend\n+    has_tpu_torch = False\n+    try:\n+        import torch_xla.core.xla_model as xm\n+\n+        has_tpu_torch = xm.xla_device_count() > 0\n+    except ImportError:\n+        pass\n+    has_tpu = has_tpu_torch and has_jax_tpu_backend()\n \n-    return True\n+    return has_cuda or has_tpu\n---------------------\n\n### RELEVANT EXISTING CODE (retrieved context)\n[CONTEXT BLOCK 1]\ndef blas_library_context(backend):\n    prev_backend = torch.backends.cuda.preferred_blas_library()\n    torch.backends.cuda.preferred_blas_library(backend)\n    try:\n        yield\n    finally:\n        torch.backends.cuda.preferred_blas_library(prev_backend)\n\n\n[CONTEXT BLOCK 2]\ndef tf32_off():\n    old_allow_tf32_matmul = torch.backends.cuda.matmul.allow_tf32\n    try:\n        torch.backends.cuda.matmul.allow_tf32 = False\n        with torch.backends.cudnn.flags(enabled=None, benchmark=None, deterministic=None, allow_tf32=False):\n            yield\n    finally:\n        torch.backends.cuda.matmul.allow_tf32 = old_allow_tf32_matmul\n\n\n[CONTEXT BLOCK 3]\ndef tracing_state_functions() -> dict[Callable[[], Any], Optional[bool]]:\n    # Defined as a function to avoid circular import like torch.onnx\n    return {\n        torch.jit.is_scripting: False,\n        torch.jit.is_tracing: False,\n        torch._C._get_tracing_state: None,\n        torch.fx._symbolic_trace.is_fx_tracing: False,\n        torch.fx._symbolic_trace.is_fx_symbolic_tracing: False,\n        torch.onnx.is_in_onnx_export: False,\n        torch._dynamo.external_utils.is_compiling: True,\n        torch._utils.is_compiling: True,\n        torch.compiler.is_compiling: True,\n        torch.compiler.is_dynamo_compiling: True,\n        torch.compiler.is_exporting: True,\n        # Look into https://github.com/pytorch/pytorch/pull/164721 why this is\n        # turned to True for Dynamo.\n        torch.nn.modules.activation._is_make_fx_tracing: True,\n    }\n\n\n[CONTEXT BLOCK 4]\ndef get_compile_fn(backend):\n    if backend == \"cudagraphs\":\n        return functools.partial(torch.compile, backend=\"cudagraphs\")\n    else:\n        return functools.partial(torch.compile, mode=\"reduce-overhead\")\n\n---------------------\n\n### STRICT EVALUATION RULES\nEvaluate the PR using ONLY the diff + provided context blocks. Check for:\n\n1. **Logic correctness**\n   - Does the new code run without obvious errors?\n   - Does the code changes follow appropiate Python Syntax?\n   - Does it break flow, variables, or types in the context given?\n\n2. **Conflicts with existing code**\n   - Does it remove required validations?\n   - Does it change API signatures?\n   - Does it conflict with surrounding logic?\n\n3. **PyTorch-style conventions**\n   - snake_case for functions camel case for variables\n   - no debug prints\n   - no TODOs left behind\n   - docstrings in proper style\n   - imports must follow PEP8 standards\n   - API changes must be justified\n\n4. **Quality and safety**\n   - No unused variables\n   - No introduction of temporary or misleading names\n   - No adding hardcoded sensitive credentials\n   - No pointless code or code changes that add no value\n   - No intermediate hacks or comments like “fix later” or “temp”\n\n---------------------\n\n### TASK\nBased ONLY on the diff + retrieved context, answer:\n\n1. Correctness: Is the change logically correct? (Yes/No + one line)\n2. Conflicts: Does it conflict with existing code? (Yes/No + one line)\n3. Style: Does it follow PEP8 conventions? (Yes/No + one line)\n4. Concerns: List ANY issues; if none, write \"None\".\n5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT\n\n---------------------\n### OUTPUT FORMAT (MANDATORY)\nCorrectness: <Yes/No + one short sentence>\nConflicts: <Yes/No + one short sentence>\nStyle: <Yes/No + one short sentence>\nConcerns:\n- <bullet list>\nFinal Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>\n---------------------\n### ANSWER:\n\n1. Correctness: APPROVE\n2. Conflicts: None\n3. Style: Yes\n4. Concerns:\n- None\n5. Final Verdict: APPROVE"
+"
+You are reviewing a Pull Request in a **PyTorch-like Python codebase**.
+
+Your job is to evaluate ONLY what is strictly present in:
+1) The PR's diff
+2) The retrieved context blocks
+Do NOT assume or invent missing code. If some information is not present in these sources, state it explicitly.
+
+---------------------
+### PR INFORMATION
+PR ID: 167264
+Description:
+This pull request extends backend detection logic for Pallas by adding support for TPU backends. Previously, Pallas only enabled functionality when CUDA was available. The PR introduces a new function `has_jax_tpu_backend()` and updates `has_pallas()` to enable Pallas when either CUDA or TPU is available through both PyTorch and JAX. This improves compatibility for TPU environments.
+
+Modified Files:
+torch/utils/_pallas.py
+
+Diff:
+diff --git a/torch/utils/_pallas.py b/torch/utils/_pallas.py
+index 25cc635dbb178..2d93e7f32c58e 100644
+--- a/torch/utils/_pallas.py
++++ b/torch/utils/_pallas.py
+@@ -57,6 +57,21 @@ def has_jax_cuda_backend() -> bool:
+         return False
+ 
+ 
++@functools.cache
++def has_jax_tpu_backend() -> bool:
++    \"\"\"Check if JAX has TPU backend support.\"\"\"
++    if not has_jax_package():
++        return False
++    try:
++        import jax  # type: ignore[import-not-found]
++
++        # Check if TPU backend is available
++        devices = jax.devices(\"tpu\")
++        return len(devices) > 0
++    except Exception:
++        return False
++
++
+ @functools.cache
+ def has_pallas() -> bool:
+     \"\"\"
+@@ -65,18 +80,22 @@ def has_pallas() -> bool:
+     Requirements:
+     - JAX package installed
+     - Pallas (jax.experimental.pallas) available
+-    - CUDA backend available (for GPU support)
++    - A compatible backend (CUDA or TPU) is available in both PyTorch and JAX.
+     \"\"\"
+     if not has_pallas_package():
+         return False
+ 
+-    # Only enable Pallas if CUDA is available
+-    # (Pallas primarily targets GPU workloads)
+-    if not torch.cuda.is_available():
+-        return False
++    # Check for is CUDA is available or if JAX has GPU/CUDA backend
++    has_cuda = torch.cuda.is_available() and has_jax_cuda_backend()
+ 
+-    # Check if JAX has GPU/CUDA backend
+-    if not has_jax_cuda_backend():
+-        return False
++    # Check for TPU backend
++    has_tpu_torch = False
++    try:
++        import torch_xla.core.xla_model as xm
++
++        has_tpu_torch = xm.xla_device_count() > 0
++    except ImportError:
++        pass
++    has_tpu = has_tpu_torch and has_jax_tpu_backend()
+ 
+-    return True
++    return has_cuda or has_tpu
+---------------------
+
+### RELEVANT EXISTING CODE (retrieved context)
+[CONTEXT BLOCK 1]
+def blas_library_context(backend):
+    prev_backend = torch.backends.cuda.preferred_blas_library()
+    torch.backends.cuda.preferred_blas_library(backend)
+    try:
+        yield
+    finally:
+        torch.backends.cuda.preferred_blas_library(prev_backend)
+
+
+[CONTEXT BLOCK 2]
+def tf32_off():
+    old_allow_tf32_matmul = torch.backends.cuda.matmul.allow_tf32
+    try:
+        torch.backends.cuda.matmul.allow_tf32 = False
+        with torch.backends.cudnn.flags(enabled=None, benchmark=None, deterministic=None, allow_tf32=False):
+            yield
+    finally:
+        torch.backends.cuda.matmul.allow_tf32 = old_allow_tf32_matmul
+
+
+[CONTEXT BLOCK 3]
+def tracing_state_functions() -> dict[Callable[[], Any], Optional[bool]]:
+    # Defined as a function to avoid circular import like torch.onnx
+    return {
+        torch.jit.is_scripting: False,
+        torch.jit.is_tracing: False,
+        torch._C._get_tracing_state: None,
+        torch.fx._symbolic_trace.is_fx_tracing: False,
+        torch.fx._symbolic_trace.is_fx_symbolic_tracing: False,
+        torch.onnx.is_in_onnx_export: False,
+        torch._dynamo.external_utils.is_compiling: True,
+        torch._utils.is_compiling: True,
+        torch.compiler.is_compiling: True,
+        torch.compiler.is_dynamo_compiling: True,
+        torch.compiler.is_exporting: True,
+        # Look into https://github.com/pytorch/pytorch/pull/164721 why this is
+        # turned to True for Dynamo.
+        torch.nn.modules.activation._is_make_fx_tracing: True,
+    }
+
+
+[CONTEXT BLOCK 4]
+def get_compile_fn(backend):
+    if backend == \"cudagraphs\":
+        return functools.partial(torch.compile, backend=\"cudagraphs\")
+    else:
+        return functools.partial(torch.compile, mode=\"reduce-overhead\")
+
+---------------------
+
+### STRICT EVALUATION RULES
+Evaluate the PR using ONLY the diff + provided context blocks. Check for:
+
+1. **Logic correctness**
+   - Does the new code run without obvious errors?
+   - Does the code changes follow appropiate Python Syntax?
+   - Does it break flow, variables, or types in the context given?
+
+2. **Conflicts with existing code**
+   - Does it remove required validations?
+   - Does it change API signatures?
+   - Does it conflict with surrounding logic?
+
+3. **PyTorch-style conventions**
+   - snake_case for functions camel case for variables
+   - no debug prints
+   - no TODOs left behind
+   - docstrings in proper style
+   - imports must follow PEP8 standards
+   - API changes must be justified
+
+4. **Quality and safety**
+   - No unused variables
+   - No introduction of temporary or misleading names
+   - No adding hardcoded sensitive credentials
+   - No pointless code or code changes that add no value
+   - No intermediate hacks or comments like “fix later” or “temp”
+
+---------------------
+
+### TASK
+Based ONLY on the diff + retrieved context, answer:
+
+1. Correctness: Is the change logically correct? (Yes/No + one line)
+2. Conflicts: Does it conflict with existing code? (Yes/No + one line)
+3. Style: Does it follow PEP8 conventions? (Yes/No + one line)
+4. Concerns: List ANY issues; if none, write \"None\".
+5. Final Verdict: APPROVE, REQUEST_CHANGES, or REJECT
+
+---------------------
+### OUTPUT FORMAT (MANDATORY)
+Correctness: <Yes/No + one short sentence>
+Conflicts: <Yes/No + one short sentence>
+Style: <Yes/No + one short sentence>
+Concerns:
+- <bullet list>
+Final Verdict: <APPROVE | REQUEST_CHANGES + explanation | REJECT>
+---------------------
+### ANSWER:
+
+1. Correctness: APPROVE
+2. Conflicts: None
+3. Style: Yes
+4. Concerns:
+- None
+5. Final Verdict: APPROVE"
